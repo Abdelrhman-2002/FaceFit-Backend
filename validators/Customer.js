@@ -50,5 +50,5 @@ const updateCustomer = [
 
 module.exports = {
     createCustomer,
-    updateCustomer, // Added export
+    updateCustomer,
 };

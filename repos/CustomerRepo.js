@@ -50,5 +50,5 @@ module.exports = {
   createCustomer,
   getCustomerByEmail,
   updateCustomerById,
-  getCustomerById, // Added export
+  getCustomerById,
 };

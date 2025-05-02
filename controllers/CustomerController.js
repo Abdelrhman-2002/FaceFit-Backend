@@ -57,5 +57,5 @@ module.exports = {
   login,
   createCustomer,
   getCustomers,
-  updateCustomer, // Added export
+  updateCustomer,
 };
