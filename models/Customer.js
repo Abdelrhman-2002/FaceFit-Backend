@@ -10,7 +10,6 @@ const customerSchema = new mongoose.Schema({
     address: {type: String,default:""},
     password: { type: String, required: true },
     profilePicture: { type: String , default : "default.jpg"},
-    wallet: { type: Number, default: 0 },
     orders: { type: [mongoose.Schema.Types.ObjectId], ref: 'Order' },
     wishList: { type: [mongoose.Schema.Types.ObjectId], ref: 'Glasses' },
     cart: { type: [mongoose.Schema.Types.ObjectId], ref: 'Glasses' },

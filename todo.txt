@@ -1,0 +1,5 @@
+#1 update password
+#2 update image
+#3 update mobile
+#4 update address
+#5 delete customer

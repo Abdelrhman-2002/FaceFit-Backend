@@ -6,10 +6,11 @@ const createCustomer = async (createCustomerDto) => {
     return newCustomer;
   } catch (error) {
     if (error.code === 11000) {
+      console.error("Customer creation failed: Duplicate email detected.");
       throw new Error("Email already exists");
     }
-    console.log("Customer Repo ERROR: ", error);
-    throw error;
+    console.error("Customer creation failed with error: ", error);
+    throw new Error("An error occurred while creating the customer");
   }
 };
 
