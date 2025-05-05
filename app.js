@@ -3,6 +3,7 @@ const config = require("./config/config");
 const connectDB = require("./config/db");
 const cors = require("cors");
 const customerRoutes = require("./routers/CustomerRoutes");
+const glassesRoutes = require("./routers/glassesRoutes");
 
 connectDB();
 
@@ -14,6 +15,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/facefit/customers", customerRoutes);
+app.use("/facefit/glasses", glassesRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Customer API");

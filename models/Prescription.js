@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 
 const prescriptionSchema = new mongoose.Schema({
-
     OS:{
         SPH: { type: Number, required: true },
         CYL: { type: Number, required: true },
