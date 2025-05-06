@@ -27,10 +27,22 @@ const getAll = async () => {
     return await Glasses.find();
 };
 
+const getBestSellers = async () => {
+    return await Glasses.find().sort({ numberOfSells: -1 }).limit(20);
+};
+
+const getNewArrivals = async () => {
+    return await Glasses.find()
+        .sort({ createdAt: -1 })
+        .limit(20);
+};
+
 module.exports = {
     create,
     update,
     search,
     delete: deleteGlasses,
     getAll,
+    getBestSellers,
+    getNewArrivals,
 };

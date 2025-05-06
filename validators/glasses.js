@@ -11,7 +11,15 @@ const createGlasses = [
     body('material').isString().withMessage('Material is required'),
     body('type').isIn(['sunglasses', 'eyeglasses']).withMessage('Type must be either sunglasses or eyeglasses'),
     body('colors').isArray().withMessage('Colors are required'),
-    body('gender').isIn(['Men', 'Women']).withMessage('Gender must be either Men or Women')
+    body('gender').isIn(['Men', 'Women']).withMessage('Gender must be either Men or Women'),
+    body('createdAt')
+        .optional()
+        .custom((value) => {
+            if (new Date(value) > new Date()) {
+                throw new Error('createdAt cannot be a future date');
+            }
+            return true;
+        }).withMessage('Invalid createdAt date')
 ]
 
 const updateGlasses = [

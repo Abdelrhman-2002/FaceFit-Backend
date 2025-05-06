@@ -45,10 +45,30 @@ const getAllGlasses = async (req, res) => {
     }
 };
 
+const getBestSellers = async (req, res) => {
+    try {
+        const glasses = await GlassesService.getBestSellers();
+        res.status(200).json(glasses);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
+const getNewArrivals = async (req, res) => {
+    try {
+        const glasses = await GlassesService.getNewArrivals();
+        res.status(200).json(glasses);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
+};
+
 module.exports = {
     addGlasses,
     updateGlasses,
     searchGlasses,
     deleteGlasses,
     getAllGlasses,
+    getBestSellers,
+    getNewArrivals,
 };
