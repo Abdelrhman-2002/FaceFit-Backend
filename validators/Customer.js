@@ -1,4 +1,4 @@
-const { body, validationResult } = require('express-validator');
+const { body } = require('express-validator');
 
 const createCustomer = [
     body('firstName').isString().withMessage('First name is required'),

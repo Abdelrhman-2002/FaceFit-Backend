@@ -7,6 +7,8 @@ const config = {
   jwt: {
     secret: process.env.JWT_SECRET,
     expiration: process.env.JWT_EXPIRATION,
+    adminSecret: process.env.JWT_ADMIN_SECRET,
+    adminExpiration: process.env.JWT_ADMIN_EXPIRATION,
   },
 };
 
