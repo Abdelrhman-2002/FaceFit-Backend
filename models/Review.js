@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
-    glasses: { type: mongoose.Schema.Types.ObjectId, ref: 'Glasses', required: true },
-    rate: { type: Number, required: true },
-    comment: { type: String, required: true }
+    customerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
+    glassesId: { type: mongoose.Schema.Types.ObjectId, ref: 'Glasses', required: true },
+    rating: { type: Number, required: true },
+    comment: { type: String, required: true },
+    date: { type: Date, default: Date.now }
 });
 
 const Review = mongoose.model('Review', reviewSchema);
