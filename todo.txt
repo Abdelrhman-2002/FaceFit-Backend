@@ -7,3 +7,10 @@
 //get all products 
 //select filter={attribute:""}
 //delete
+
+
+//price done
+//id done
+//add,delete,get review
+//add to,get favorites done
+//

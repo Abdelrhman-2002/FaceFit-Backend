@@ -64,9 +64,53 @@ const getCustomerById = async (customerId) => {
   }
 };
 
+const toggleFavorite = async (customerId, glassesId) => {
+  try {
+    const customer = await customerRepo.getCustomerById(customerId);
+    if (!customer) {
+      throw new Error("Customer not found");
+    }
+
+    const favorites = customer.favorites || [];
+    const index = favorites.findIndex(fav => fav._id.toString() === glassesId);
+
+    if (index !== -1) {
+      // Remove from favorites
+      favorites.splice(index, 1);
+    } else {
+      // Add to favorites
+      favorites.push(glassesId);
+    }
+
+    const updatedCustomer = await customerRepo.updateCustomerById(customerId, { favorites });
+    return {
+      message: index !== -1 ? "Removed from favorites" : "Added to favorites",
+      favorites: updatedCustomer.favorites
+    };
+  } catch (error) {
+    console.error("Error in toggleFavorite:", error);
+    throw error;
+  }
+};
+
+const getFavorites = async (customerId) => {
+  try {
+    const customer = await customerRepo.getCustomerById(customerId);
+    if (!customer) {
+      throw new Error("Customer not found");
+    }
+    return customer.favorites;
+  } catch (error) {
+    console.error("Error in getFavorites:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   signup,
   login,
   updateCustomer,
   getCustomerById,
+  toggleFavorite,
+  getFavorites,
 };

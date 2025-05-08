@@ -26,7 +26,7 @@ const getCustomerByEmail = async (email) => {
 
 const getCustomerById = async (customerId) => {
   try {
-    const customer = await Customer.findById(customerId);
+    const customer = await Customer.findById(customerId).populate('favorites');
     return customer;
   } catch (error) {
     console.log("Customer Repo ERROR: ", error);

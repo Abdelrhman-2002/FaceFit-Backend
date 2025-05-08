@@ -11,10 +11,10 @@ const customerSchema = new mongoose.Schema({
     password: { type: String, required: true },
     profilePicture: { type: String , default : "default.jpg"},
     orders: { type: [mongoose.Schema.Types.ObjectId], ref: 'Order' },
-    wishList: { type: [mongoose.Schema.Types.ObjectId], ref: 'Glasses' },
     cart: { type: [mongoose.Schema.Types.ObjectId], ref: 'Glasses' },
     reviews: { type: [mongoose.Schema.Types.ObjectId], ref: 'Review' },
-    Prescriptions: { type: [mongoose.Schema.Types.ObjectId], ref: 'Prescription' },
+    prescriptions: { type: [mongoose.Schema.Types.ObjectId], ref: 'Prescription' },
+    favorites: { type: [mongoose.Schema.Types.ObjectId], ref: 'Glasses',default: []},
 });
 
 const Customer = mongoose.model('Customer', customerSchema);

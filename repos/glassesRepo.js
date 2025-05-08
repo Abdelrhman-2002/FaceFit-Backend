@@ -1,4 +1,5 @@
 const Glasses = require("../models/Glasses");
+const { ObjectId } = require('mongoose').Types;
 
 const create = async (data) => {
     return await Glasses.create(data);
@@ -10,15 +11,35 @@ const update = async (id, data) => {
 
 const search = async (query) => {
     const searchCriteria = {};
+    
     for (const key in query) {
-        searchCriteria[key] = { $regex: query[key], $options: "i" };
+        if (key === '_id') {
+            try {
+                searchCriteria[key] = new ObjectId(query[key]);
+            } catch (err) {
+                throw new Error('Invalid ID format');
+            }
+        }
+        else if (key === 'price' && typeof query[key] === 'object') {
+            searchCriteria[key] = {};
+            for (const op in query[key]) {
+                const mongoOp = `$${op}`;
+                searchCriteria[key][mongoOp] = Number(query[key][op]);
+            }
+        }
+        else if (key === 'price') {
+            searchCriteria[key] = Number(query[key]);
+        }
+        else if (key === 'gender') {
+            searchCriteria[key] = query[key];
+        }
+        else {
+            searchCriteria[key] = { $regex: query[key], $options: "i" };
+        }
     }
-    if (query.gender) {
-        searchCriteria.gender = query.gender;
-    }
+    
     return await Glasses.find(searchCriteria);
 };
-
 const deleteGlasses = async (id) => {
     return await Glasses.findByIdAndDelete(id);
 };

@@ -52,10 +52,35 @@ const updateCustomer = async (req, res) => {
   }
 };
 
+const toggleFavorite = async (req, res) => {
+  try {
+    const customerId = req.customerId;
+    const glassesId = req.params.glassesId;
+    const result = await customerService.toggleFavorite(customerId, glassesId);
+    res.send(jsend.success(result));
+  } catch (error) {
+    console.log("Error in toggleFavorite:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const getFavorites = async (req, res) => {
+  try {
+    const customerId = req.customerId;
+    const favorites = await customerService.getFavorites(customerId);
+    res.send(jsend.success(favorites));
+  } catch (error) {
+    console.log("Error in getFavorites:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
   createCustomer,
   getCustomers,
   updateCustomer,
+  toggleFavorite,
+  getFavorites,
 };
