@@ -37,8 +37,7 @@ const search = async (query) => {
             searchCriteria[key] = { $regex: query[key], $options: "i" };
         }
     }
-    
-    return await Glasses.find(searchCriteria);
+    return await Glasses.find(searchCriteria).sort({ price: 1 });
 };
 const deleteGlasses = async (id) => {
     return await Glasses.findByIdAndDelete(id);

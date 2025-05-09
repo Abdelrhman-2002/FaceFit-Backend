@@ -14,7 +14,6 @@ const glassesSchema = new mongoose.Schema({
     colors: { type: [String], required: true },
     numberOfRatings: { type: Number, default:0},
     rate: { type: Number, default:0},
-    reviews: { type: [mongoose.Schema.Types.ObjectId], ref: 'Review',default: [] },
     createdAt: { type: Date, default: Date.now },
     numberOfSells: { type: Number, default: 0 }
 });

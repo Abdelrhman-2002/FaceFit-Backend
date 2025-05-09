@@ -16,4 +16,3 @@ router.post("/favorites/:glassesId", customerAuth, toggleFavorite);
 router.get("/favorites", customerAuth, getFavorites);
 
 module.exports = router;
-
