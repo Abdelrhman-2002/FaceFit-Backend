@@ -12,6 +12,9 @@ connectDB();
 const app = express();
 const port = config.port || 3000;
 
+
+app.use('/uploads', express.static('uploads'));
+
 app.use(cors());
 
 app.use(express.json());
@@ -24,7 +27,6 @@ app.use("/facefit/reviews",reviewRoutes);
 app.get("/", (req, res) => {
   res.send("Welcome to the Customer API");
 });
-
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
