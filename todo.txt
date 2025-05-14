@@ -1,16 +1,7 @@
-#1 update password
-#2 update image
-#3 update mobile
-#4 update address
-#5 delete customer
-//add product 
-//get all products 
-//select filter={attribute:""}
-//delete
+make the cart logic.
+upload the models of the AR.
+handle the logic of the images.
+add profile picture.
+prepare all the logic and the endpoints for the admin panel.
 
-
-//price done
-//id done
-//add,delete,get review
-//add to,get favorites done
-//
+w bas kda ya sedy kolo ta7t el control :|

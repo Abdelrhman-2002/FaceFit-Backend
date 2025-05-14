@@ -12,7 +12,6 @@ const customerSchema = new mongoose.Schema({
     profilePicture: { type: String , default : "default.jpg"},
     orders: { type: [mongoose.Schema.Types.ObjectId], ref: 'Order' },
     cart: { type: [mongoose.Schema.Types.ObjectId], ref: 'Glasses' },
-    prescriptions: { type: [mongoose.Schema.Types.ObjectId], ref: 'Prescription' },
     favorites: { type: [mongoose.Schema.Types.ObjectId], ref: 'Glasses',default: []},
 });
 

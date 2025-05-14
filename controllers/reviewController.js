@@ -1,6 +1,7 @@
 const reviewService = require("../services/reviewService");
 const jsend = require("jsend");
 const { validationResult } = require("express-validator");
+const Review = require("../models/Review");
 
 const createReview = async (req, res) => {
     try {
@@ -37,6 +38,15 @@ const getReviews = async (req, res) => {
 const deleteReview = async (req, res) => {
     try {
         const { reviewId } = req.params;
+        const customerId = req.customerId;
+        const review = await Review.findById(reviewId);
+        if (!review) {
+            return res.status(404).json({ error: "Review not found" });
+        }
+        if (review.customerId.toString() !== customerId) {
+            return res.status(403).json({ error: "You are not authorized to delete this review" });
+        }
+
         await reviewService.deleteReview(reviewId);
         res.send(jsend.success({ message: "Review deleted successfully" }));
     } catch (error) {

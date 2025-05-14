@@ -9,10 +9,8 @@ const orderSchema = new mongoose.Schema({
     address: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', required: true },
     phone: { type: String, required: true },
     deliveryDate: { type: Date, required: true },
-    deliveryTime: { type: String, required: true },
     cart: { type: [mongoose.Schema.Types.ObjectId], ref: 'Cart' },
-    paymentId: { type: String, required: true },
-
+    Prescription: { type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' }
 });
 
 const Order = mongoose.model('Order', orderSchema);
