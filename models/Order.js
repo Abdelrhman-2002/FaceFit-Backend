@@ -6,9 +6,9 @@ const orderSchema = new mongoose.Schema({
     status: { type: String, required: true, enum: ["pending", "shipped", "delivered"] },
     total: { type: Number, required: true },
     paymentMethod: { type: String, required: true, enum: ["credit card", "cash"] },
-    address: { type: mongoose.Schema.Types.ObjectId, ref: 'Address', required: true },
+    address: { type: String, required: true },
     phone: { type: String, required: true },
-    deliveryDate: { type: Date, required: true },
+    deliveryDate: { type: Date },
     cart: { type: [mongoose.Schema.Types.ObjectId], ref: 'Cart' },
     Prescription: { type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' }
 });

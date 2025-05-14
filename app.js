@@ -2,10 +2,14 @@ const express = require("express");
 const config = require("./config/config");
 const connectDB = require("./config/db");
 const cors = require("cors");
+const path = require("path");
 const customerRoutes = require("./routers/CustomerRoutes");
 const glassesRoutes = require("./routers/glassesRoutes");
 const adminRoutes = require("./routers/adminRoutes");
 const reviewRoutes = require("./routers/reviewRoutes");
+const cartRoutes = require("./routers/cartRoutes");
+const orderRoutes = require("./routers/orderRoutes");
+const prescriptionRoutes = require("./routers/prescriptionRoutes");
 
 connectDB();
 
@@ -22,7 +26,10 @@ app.use(express.json());
 app.use("/facefit/customers", customerRoutes);
 app.use("/facefit/glasses", glassesRoutes);
 app.use("/facefit/admin", adminRoutes);
-app.use("/facefit/reviews",reviewRoutes);
+app.use("/facefit/reviews", reviewRoutes);
+app.use("/facefit/cart", cartRoutes);
+app.use("/facefit/orders", orderRoutes);
+app.use("/facefit/prescriptions", prescriptionRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the Customer API");

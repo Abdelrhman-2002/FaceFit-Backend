@@ -1,6 +1,7 @@
 const customerService = require("../services/customerService");
 const jsend = require("jsend");
 const { validationResult } = require("express-validator");
+const upload = require("../middlewares/upload");
 
 const signup = async (req, res) => {
   try {
@@ -75,6 +76,27 @@ const getFavorites = async (req, res) => {
   }
 };
 
+const updateProfilePicture = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
+    
+    const customerId = req.customerId;
+    const profilePicture = req.file.filename;
+    
+    const updatedCustomer = await customerService.updateCustomer(customerId, { profilePicture });
+    
+    res.send(jsend.success({
+      message: "Profile picture updated successfully",
+      profilePicture: updatedCustomer.profilePicture
+    }));
+  } catch (error) {
+    console.log("Error in updateProfilePicture:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
@@ -83,4 +105,5 @@ module.exports = {
   updateCustomer,
   toggleFavorite,
   getFavorites,
+  updateProfilePicture,
 };
