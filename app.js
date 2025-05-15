@@ -10,6 +10,7 @@ const reviewRoutes = require("./routers/reviewRoutes");
 const cartRoutes = require("./routers/cartRoutes");
 const orderRoutes = require("./routers/orderRoutes");
 const prescriptionRoutes = require("./routers/prescriptionRoutes");
+const { swaggerUi, specs } = require('./swagger');
 
 connectDB();
 
@@ -23,6 +24,9 @@ app.use(cors());
 
 app.use(express.json());
 
+// Swagger documentation route
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+
 app.use("/facefit/customers", customerRoutes);
 app.use("/facefit/glasses", glassesRoutes);
 app.use("/facefit/admin", adminRoutes);
@@ -32,8 +36,9 @@ app.use("/facefit/orders", orderRoutes);
 app.use("/facefit/prescriptions", prescriptionRoutes);
 
 app.get("/", (req, res) => {
-  res.send("Welcome to the Customer API");
+  res.send("Welcome to the FaceFit API. Check /api-docs for documentation.");
 });
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+  console.log(`API Documentation available at http://localhost:${port}/api-docs`);
 });
