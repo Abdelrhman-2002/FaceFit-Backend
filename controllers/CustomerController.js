@@ -76,6 +76,17 @@ const getFavorites = async (req, res) => {
   }
 };
 
+const getProfile = async (req, res) => {
+  try {
+    const customerId = req.customerId;
+    const customer = await customerService.getCustomerById(customerId);
+    res.send(jsend.success(customer));
+  } catch (error) {
+    console.log("Error in getProfile:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 const updateProfilePicture = async (req, res) => {
   try {
     if (!req.file) {
@@ -106,4 +117,5 @@ module.exports = {
   toggleFavorite,
   getFavorites,
   updateProfilePicture,
+  getProfile,
 };
