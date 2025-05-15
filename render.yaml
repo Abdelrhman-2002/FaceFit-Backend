@@ -2,6 +2,7 @@ services:
   - type: web
     name: facefit-backend
     env: node
+    nodeVersion: 16
     buildCommand: npm install
     startCommand: node app.js
     envVars:

@@ -41,4 +41,16 @@ JWT_SECRET=your_jwt_secret_here
 JWT_EXPIRATION=24h
 JWT_ADMIN_SECRET=your_admin_jwt_secret_here
 JWT_ADMIN_EXPIRATION=24h
-``` 
+```
+
+## Troubleshooting
+
+### bcrypt Error on Deployment
+
+If you encounter an error related to bcrypt during deployment, such as "invalid ELF header", this is likely due to Node.js version incompatibility. We've configured the application to use Node.js 16.x, which is compatible with our bcrypt version.
+
+If you still encounter issues:
+
+1. Try updating your bcrypt version: `npm update bcrypt`
+2. If using a newer Node.js version, rebuild bcrypt from source: `npm rebuild bcrypt --build-from-source`
+3. Or consider using a different hashing library like argon2 if needed 
