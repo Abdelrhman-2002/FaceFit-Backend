@@ -53,4 +53,17 @@ If you still encounter issues:
 
 1. Try updating your bcrypt version: `npm update bcrypt`
 2. If using a newer Node.js version, rebuild bcrypt from source: `npm rebuild bcrypt --build-from-source`
-3. Or consider using a different hashing library like argon2 if needed 
+3. Or consider using a different hashing library like argon2 if needed
+
+### Module Not Found Errors
+
+If you encounter "Cannot find module" errors like:
+```
+Error: Cannot find module '../validators/Glasses'
+```
+
+This is usually due to case sensitivity differences between local development on macOS/Windows (which are case-insensitive) and Linux-based deploy environments (which are case-sensitive).
+
+Check that the import statement matches the exact case of the filename:
+- Example: If your file is named `glasses.js` (lowercase), but imported as `../validators/Glasses` (uppercase), it will fail on deployment.
+- Fix by ensuring all imports match the exact case of the actual files. 

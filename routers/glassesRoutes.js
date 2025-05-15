@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const GlassesController = require("../controllers/glassesController");
-const { createGlasses, updateGlasses } = require("../validators/Glasses");
+const { createGlasses, updateGlasses } = require("../validators/glasses");
 const { adminAuth } = require("../middlewares/auth");
 
 //admin endpoints
