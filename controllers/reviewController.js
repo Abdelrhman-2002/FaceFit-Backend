@@ -10,7 +10,7 @@ const createReview = async (req, res) => {
             return res.status(400).json({ errors: errors.array() });
         }
         const reviewData = {
-            customerId: req.body.customerId,
+            customerId: req.customerId,
             glassesId: req.body.glassesId,
             rating: req.body.rating,
             comment: req.body.comment,
