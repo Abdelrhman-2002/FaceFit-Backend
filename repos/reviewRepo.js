@@ -26,7 +26,7 @@ const deleteReview = async (reviewId) => {
 
 const getAllReviews = async (glassesId) => {
     try {
-        const reviews = await Review.find({ glassesId }).populate('customerId', 'name email');
+        const reviews = await Review.find({ glassesId }).populate('customerId', 'firstName lastName email');
         return reviews;
     } catch (error) {
         console.error("Error fetching reviews: ", error);

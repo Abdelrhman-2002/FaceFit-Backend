@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-const Review = require('./Review');
-const Prescription = require('./Prescription');
 
 const customerSchema = new mongoose.Schema({
     firstName: { type: String, required: true },
