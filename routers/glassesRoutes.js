@@ -14,5 +14,6 @@ router.get("/search/", GlassesController.searchGlasses);
 router.get("/all", GlassesController.getAllGlasses);
 router.get("/bestsellers", GlassesController.getBestSellers);
 router.get("/newarrivals", GlassesController.getNewArrivals);
+router.get("/try-on", GlassesController.getTryOnGlasses);
 
 module.exports = router;

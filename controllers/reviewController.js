@@ -15,7 +15,6 @@ const createReview = async (req, res) => {
             rating: req.body.rating,
             comment: req.body.comment,
         };
-
         const review = await reviewService.createReview(reviewData);
         res.send(jsend.success(review));
     } catch (error) {

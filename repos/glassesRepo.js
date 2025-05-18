@@ -27,11 +27,17 @@ const search = async (query) => {
                 searchCriteria[key][mongoOp] = Number(query[key][op]);
             }
         }
-        else if (key === 'price') {
+        else if (key === 'price' || key === 'weight' || key === 'stock') {
             searchCriteria[key] = Number(query[key]);
         }
-        else if (key === 'gender') {
+        else if (key === 'gender' || key === 'type' || key === 'size') {
             searchCriteria[key] = query[key];
+        }
+        else if (key === 'tryOn') {
+            searchCriteria[key] = query[key] === 'true';
+        }
+        else if (key === 'colors') {
+            searchCriteria[key] = { $in: [query[key]] };
         }
         else {
             searchCriteria[key] = { $regex: query[key], $options: "i" };

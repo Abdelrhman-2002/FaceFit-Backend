@@ -14,48 +14,90 @@
  *             type: object
  *             required:
  *               - name
- *               - brand
  *               - price
- *               - description
- *               - frameType
  *               - stock
- *               - color
+ *               - images
+ *               - shape
+ *               - weight
+ *               - size
  *               - material
+ *               - type
  *               - gender
+ *               - colors
  *             properties:
  *               name:
  *                 type: string
  *                 description: Name of the glasses
- *               brand:
- *                 type: string
- *                 description: Brand of the glasses
  *               price:
  *                 type: number
  *                 description: Price of the glasses
- *               description:
- *                 type: string
- *                 description: Description of the glasses
+ *               stock:
+ *                 type: integer
+ *                 description: Number of items in stock
  *               images:
  *                 type: array
  *                 items:
  *                   type: string
  *                 description: URLs of glasses images
- *               frameType:
+ *               shape:
  *                 type: string
- *                 description: Type of frame
- *               stock:
- *                 type: integer
- *                 description: Number of items in stock
- *               color:
+ *                 description: Shape of the glasses
+ *               weight:
+ *                 type: number
+ *                 description: Weight of the glasses
+ *               size:
  *                 type: string
- *                 description: Color of the glasses
+ *                 description: Size of the glasses
  *               material:
  *                 type: string
  *                 description: Material of the glasses
+ *               type:
+ *                 type: string
+ *                 enum: [sunglasses, eyeglasses]
+ *                 description: Type of glasses
  *               gender:
  *                 type: string
- *                 enum: [Male, Female, Unisex]
+ *                 enum: [Men, Women]
  *                 description: Gender the glasses are designed for
+ *               colors:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Available colors for the glasses
+ *               tryOn:
+ *                 type: boolean
+ *                 description: Whether the glasses can be tried on virtually
+ *               arModels:
+ *                 type: object
+ *                 properties:
+ *                   modelArmsOBJ:
+ *                     type: string
+ *                     description: URL to the OBJ file for the arms model
+ *                   modelArmsMTL:
+ *                     type: string
+ *                     description: URL to the MTL file for the arms model
+ *                   modelLensesOBJ:
+ *                     type: string
+ *                     description: URL to the OBJ file for the lenses model
+ *                   modelLensesMTL:
+ *                     type: string
+ *                     description: URL to the MTL file for the lenses model
+ *                   modelFrameOBJ:
+ *                     type: string
+ *                     description: URL to the OBJ file for the frame model
+ *                   modelFrameMTL:
+ *                     type: string
+ *                     description: URL to the MTL file for the frame model
+ *                   modelArmsMaterial:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     description: Materials for the arms model
+ *                   modelFrameMaterial:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     description: Materials for the frame model
  *     responses:
  *       201:
  *         description: Glasses added successfully
@@ -105,36 +147,76 @@
  *               name:
  *                 type: string
  *                 description: Name of the glasses
- *               brand:
- *                 type: string
- *                 description: Brand of the glasses
  *               price:
  *                 type: number
  *                 description: Price of the glasses
- *               description:
- *                 type: string
- *                 description: Description of the glasses
+ *               stock:
+ *                 type: integer
+ *                 description: Number of items in stock
  *               images:
  *                 type: array
  *                 items:
  *                   type: string
  *                 description: URLs of glasses images
- *               frameType:
+ *               shape:
  *                 type: string
- *                 description: Type of frame
- *               stock:
- *                 type: integer
- *                 description: Number of items in stock
- *               color:
+ *                 description: Shape of the glasses
+ *               weight:
+ *                 type: number
+ *                 description: Weight of the glasses
+ *               size:
  *                 type: string
- *                 description: Color of the glasses
+ *                 description: Size of the glasses
  *               material:
  *                 type: string
  *                 description: Material of the glasses
+ *               type:
+ *                 type: string
+ *                 enum: [sunglasses, eyeglasses]
+ *                 description: Type of glasses
  *               gender:
  *                 type: string
- *                 enum: [Male, Female, Unisex]
+ *                 enum: [Men, Women]
  *                 description: Gender the glasses are designed for
+ *               colors:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Available colors for the glasses
+ *               tryOn:
+ *                 type: boolean
+ *                 description: Whether the glasses can be tried on virtually
+ *               arModels:
+ *                 type: object
+ *                 properties:
+ *                   modelArmsOBJ:
+ *                     type: string
+ *                     description: URL to the OBJ file for the arms model
+ *                   modelArmsMTL:
+ *                     type: string
+ *                     description: URL to the MTL file for the arms model
+ *                   modelLensesOBJ:
+ *                     type: string
+ *                     description: URL to the OBJ file for the lenses model
+ *                   modelLensesMTL:
+ *                     type: string
+ *                     description: URL to the MTL file for the lenses model
+ *                   modelFrameOBJ:
+ *                     type: string
+ *                     description: URL to the OBJ file for the frame model
+ *                   modelFrameMTL:
+ *                     type: string
+ *                     description: URL to the MTL file for the frame model
+ *                   modelArmsMaterial:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     description: Materials for the arms model
+ *                   modelFrameMaterial:
+ *                     type: array
+ *                     items:
+ *                       type: string
+ *                     description: Materials for the frame model
  *     responses:
  *       200:
  *         description: Glasses updated successfully
@@ -215,10 +297,10 @@
  *           type: string
  *         description: Name to search for
  *       - in: query
- *         name: brand
+ *         name: shape
  *         schema:
  *           type: string
- *         description: Brand to filter by
+ *         description: Shape to filter by
  *       - in: query
  *         name: minPrice
  *         schema:
@@ -230,12 +312,13 @@
  *           type: number
  *         description: Maximum price
  *       - in: query
- *         name: frameType
+ *         name: type
  *         schema:
  *           type: string
- *         description: Frame type to filter by
+ *           enum: [sunglasses, eyeglasses]
+ *         description: Type to filter by
  *       - in: query
- *         name: color
+ *         name: colors
  *         schema:
  *           type: string
  *         description: Color to filter by
@@ -248,8 +331,13 @@
  *         name: gender
  *         schema:
  *           type: string
- *           enum: [Male, Female, Unisex]
+ *           enum: [Men, Women]
  *         description: Gender to filter by
+ *       - in: query
+ *         name: tryOn
+ *         schema:
+ *           type: boolean
+ *         description: Filter by try-on capability
  *     responses:
  *       200:
  *         description: Search results

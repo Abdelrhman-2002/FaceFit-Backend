@@ -12,10 +12,19 @@ const glassesSchema = new mongoose.Schema({
     type: { type: String, enum: ["sunglasses", "eyeglasses"], required: true },
     gender: { type: String, enum:["Men","Women"], required: true },
     colors: { type: [String], required: true },
-    numberOfRatings: { type: Number, default:0},
-    rate: { type: Number, default:0},
     createdAt: { type: Date, default: Date.now },
-    numberOfSells: { type: Number, default: 0 }
+    numberOfSells: { type: Number, default: 0 },
+    tryOn: { type: Boolean, default: false ,required:true},
+    arModels: {
+        modelArmsOBJ: { type: String },
+        modelArmsMTL: { type: String },
+        modelLensesOBJ: { type: String },
+        modelLensesMTL: { type: String },
+        modelFrameOBJ: { type: String },
+        modelFrameMTL: { type: String },
+        modelArmsMaterial:{type:[String]},
+        modelFrameMaterial:{type:[String]}
+    }
 });
 
 const Glasses = mongoose.model('Glasses', glassesSchema);

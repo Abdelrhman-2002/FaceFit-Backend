@@ -28,6 +28,10 @@ const getNewArrivals = async () => {
     return await GlassesRepo.getNewArrivals();
 };
 
+const getTryOnGlasses = async () => {
+    return await GlassesRepo.search({ tryOn: true });
+};
+
 module.exports = {
     addGlasses,
     updateGlasses,
@@ -36,5 +40,6 @@ module.exports = {
     getAllGlasses,
     getBestSellers,
     getNewArrivals,
+    getTryOnGlasses
 };
 

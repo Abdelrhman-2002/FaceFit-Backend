@@ -16,8 +16,7 @@ const createAdmin = async (adminData) => {
 
 const getAdminByEmail = async (email) => {
     try {
-        const admin = await Admin.find
-        .findOne({ email });
+        const admin = await Admin.findOne({ email });
         return admin;
     }
     catch (error) {

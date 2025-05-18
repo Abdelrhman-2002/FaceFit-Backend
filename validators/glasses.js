@@ -12,6 +12,15 @@ const createGlasses = [
     body('type').isIn(['sunglasses', 'eyeglasses']).withMessage('Type must be either sunglasses or eyeglasses'),
     body('colors').isArray().withMessage('Colors are required'),
     body('gender').isIn(['Men', 'Women']).withMessage('Gender must be either Men or Women'),
+    body('tryOn').optional().isBoolean().withMessage('tryOn must be a boolean'),
+    body('arModels.modelArmsOBJ').optional().isString().withMessage('modelArmsOBJ must be a string'),
+    body('arModels.modelArmsMTL').optional().isString().withMessage('modelArmsMTL must be a string'),
+    body('arModels.modelLensesOBJ').optional().isString().withMessage('modelLensesOBJ must be a string'),
+    body('arModels.modelLensesMTL').optional().isString().withMessage('modelLensesMTL must be a string'),
+    body('arModels.modelFrameOBJ').optional().isString().withMessage('modelFrameOBJ must be a string'),
+    body('arModels.modelFrameMTL').optional().isString().withMessage('modelFrameMTL must be a string'),
+    body('arModels.modelArmsMaterial').optional().isArray().withMessage('modelArmsMaterial must be an array'),
+    body('arModels.modelFrameMaterial').optional().isArray().withMessage('modelFrameMaterial must be an array'),
     body('createdAt')
         .optional()
         .custom((value) => {
@@ -33,7 +42,16 @@ const updateGlasses = [
     body('material').optional().isString().withMessage('Material must be a string'),
     body('type').optional().isIn(['sunglasses', 'eyeglasses']).withMessage('Type must be either sunglasses or eyeglasses'),
     body('colors').optional().isArray().withMessage('Colors must be an array'),
-    body('gender').optional().isIn(['Men', 'Women']).withMessage('Gender must be either Men or Women')
+    body('gender').optional().isIn(['Men', 'Women']).withMessage('Gender must be either Men or Women'),
+    body('tryOn').optional().isBoolean().withMessage('tryOn must be a boolean'),
+    body('arModels.modelArmsOBJ').optional().isString().withMessage('modelArmsOBJ must be a string'),
+    body('arModels.modelArmsMTL').optional().isString().withMessage('modelArmsMTL must be a string'),
+    body('arModels.modelLensesOBJ').optional().isString().withMessage('modelLensesOBJ must be a string'),
+    body('arModels.modelLensesMTL').optional().isString().withMessage('modelLensesMTL must be a string'),
+    body('arModels.modelFrameOBJ').optional().isString().withMessage('modelFrameOBJ must be a string'),
+    body('arModels.modelFrameMTL').optional().isString().withMessage('modelFrameMTL must be a string'),
+    body('arModels.modelArmsMaterial').optional().isArray().withMessage('modelArmsMaterial must be an array'),
+    body('arModels.modelFrameMaterial').optional().isArray().withMessage('modelFrameMaterial must be an array')
 ]
 
 module.exports = {
