@@ -34,7 +34,7 @@ const search = async (query) => {
             searchCriteria[key] = query[key];
         }
         else if (key === 'tryOn') {
-            searchCriteria[key] = query[key] === 'true';
+            searchCriteria[key] = query[key] === true || query[key] === 'true';
         }
         else if (key === 'colors') {
             searchCriteria[key] = { $in: [query[key]] };
