@@ -75,9 +75,9 @@ const deleteGlasses = async (req, res) => {
 const getAllGlasses = async (req, res) => {
     try {
         const glasses = await GlassesService.getAllGlasses();
-        res.status(200).json({
-            data: glasses
-        });
+        res.send(
+           glasses
+        )
     } catch (error) {
         res.status(400).json({ 
             status: "error",
