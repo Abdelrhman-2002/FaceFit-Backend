@@ -39,10 +39,9 @@ const updateGlasses = async (req, res) => {
 const searchGlasses = async (req, res) => {
     try {
         const glasses = await GlassesService.searchGlasses(req.query);
-        res.status(200).json({
-            status: "success",
-            data: glasses
-        });
+       res.send(
+           glasses
+        )
     } catch (error) {
         res.status(400).json({ 
             status: "error",
@@ -89,10 +88,9 @@ const getAllGlasses = async (req, res) => {
 const getBestSellers = async (req, res) => {
     try {
         const glasses = await GlassesService.getBestSellers();
-        res.status(200).json({
-            status: "success",
-            data: glasses
-        });
+       res.send(
+           glasses
+        )
     } catch (error) {
         res.status(400).json({ 
             status: "error",
@@ -104,10 +102,9 @@ const getBestSellers = async (req, res) => {
 const getNewArrivals = async (req, res) => {
     try {
         const glasses = await GlassesService.getNewArrivals();
-        res.status(200).json({
-            status: "success",
-            data: glasses
-        });
+        res.send(
+           glasses
+        )
     } catch (error) {
         res.status(400).json({ 
             status: "error",
@@ -119,10 +116,9 @@ const getNewArrivals = async (req, res) => {
 const getTryOnGlasses = async (req, res) => {
     try {
         const glasses = await GlassesService.getTryOnGlasses();
-        res.status(200).json({
-            status: "success",
-            data: glasses
-        });
+        res.send(
+           glasses
+        )
     } catch (error) {
         res.status(400).json({ 
             status: "error",
