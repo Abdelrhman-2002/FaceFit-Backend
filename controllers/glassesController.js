@@ -76,7 +76,6 @@ const getAllGlasses = async (req, res) => {
     try {
         const glasses = await GlassesService.getAllGlasses();
         res.status(200).json({
-            status: "success",
             data: glasses
         });
     } catch (error) {
