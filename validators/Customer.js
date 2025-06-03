@@ -1,9 +1,18 @@
 const { body } = require('express-validator');
+const Customer = require('../models/Customer');
 
 const createCustomer = [
     body('firstName').isString().withMessage('First name is required'),
     body('lastName').isString().withMessage('Last name is required'),
-    body('email').isEmail().withMessage('Please provide a valid email'),
+    body('email')
+        .isEmail().withMessage('Please provide a valid email')
+        .custom(async (value) => {
+            const existingCustomer = await Customer.findOne({ email: value });
+            if (existingCustomer) {
+                throw new Error('The email already exists');
+            }
+            return true;
+        }),
     body('password')
         .isLength({ min: 8 }).withMessage('Password should be at least 8 characters long')
         .matches(/[A-Z]/).withMessage('Password must contain at least one uppercase letter')
