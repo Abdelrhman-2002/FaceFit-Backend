@@ -47,9 +47,20 @@ const updateCustomerById = async (customerId, updateData) => {
   }
 };
 
+const getAllCustomers = async () => {
+  try {
+    const customers = await Customer.find().select('-password').populate('favorites');
+    return customers;
+  } catch (error) {
+    console.log("Customer Repo ERROR: ", error);
+    throw error;
+  }
+};
+
 module.exports = {
   createCustomer,
   getCustomerByEmail,
   updateCustomerById,
   getCustomerById,
+  getAllCustomers,
 };

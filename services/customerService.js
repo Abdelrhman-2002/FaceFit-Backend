@@ -106,11 +106,22 @@ const getFavorites = async (customerId) => {
   }
 };
 
+const getAllCustomers = async () => {
+  try {
+    const customers = await customerRepo.getAllCustomers();
+    return customers;
+  } catch (error) {
+    console.error("Error in getAllCustomers:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   signup,
   login,
   updateCustomer,
   getCustomerById,
+  getAllCustomers,
   toggleFavorite,
   getFavorites,
 };

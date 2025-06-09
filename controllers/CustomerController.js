@@ -37,8 +37,14 @@ const createCustomer = (req, res) => {
   res.status(201).send({ message: "Customer created successfully" });
 };
 
-const getCustomers = (req, res) => {
-  res.status(200).send({ message: "List of customers" });
+const getCustomers = async (req, res) => {
+  try {
+    const customers = await customerService.getAllCustomers();
+    res.send(jsend.success(customers));
+  } catch (error) {
+    console.log("Error in getCustomers:", error);
+    res.status(500).json({ error: error.message });
+  }
 };
 
 const updateCustomer = async (req, res) => {

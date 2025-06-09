@@ -1,7 +1,6 @@
-make the cart logic.
-upload the models of the AR.
-handle the logic of the images.
-add profile picture.
+make the cart logic.              done
+upload the models of the AR. 
+add profile picture.              done
 prepare all the logic and the endpoints for the admin panel.
 
 w bas kda ya sedy kolo ta7t el control :|

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { signup, login, getCustomers, updateCustomer, toggleFavorite, getFavorites, updateProfilePicture, getProfile } = require("../controllers/CustomerController");
-const { customerAuth } = require("../middlewares/auth");
+const { customerAuth, adminAuth } = require("../middlewares/auth");
 const { createCustomer, updateCustomer: validateUpdateCustomer } = require("../validators/Customer");
 const upload = require("../middlewares/upload");
 const jsend = require("jsend");
@@ -9,7 +9,7 @@ const jsend = require("jsend");
 router.post("/signup", createCustomer, signup);
 router.post("/login", login);
 
-router.get("/", getCustomers);
+router.get("/", adminAuth, getCustomers);
 
 router.put("/update", customerAuth, validateUpdateCustomer, updateCustomer);
 
