@@ -898,7 +898,31 @@ class GlassesPage {
                 arModelInputs.forEach(fieldId => {
                     const fileInput = document.getElementById(fieldId);
                     if (fileInput.files.length > 0) {
-                        requestData.append(fieldId, fileInput.files[0]);
+                        // Map the field IDs to the correct backend field names
+                        let fieldName;
+                        switch(fieldId) {
+                            case 'model-arms-obj':
+                                fieldName = 'modelArmsOBJ';
+                                break;
+                            case 'model-arms-mtl':
+                                fieldName = 'modelArmsMTL';
+                                break;
+                            case 'model-lenses-obj':
+                                fieldName = 'modelLensesOBJ';
+                                break;
+                            case 'model-lenses-mtl':
+                                fieldName = 'modelLensesMTL';
+                                break;
+                            case 'model-frame-obj':
+                                fieldName = 'modelFrameOBJ';
+                                break;
+                            case 'model-frame-mtl':
+                                fieldName = 'modelFrameMTL';
+                                break;
+                            default:
+                                fieldName = fieldId;
+                        }
+                        requestData.append(fieldName, fileInput.files[0]);
                     }
                 });
                 

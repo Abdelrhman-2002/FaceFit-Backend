@@ -144,7 +144,7 @@ class DashboardPage {
                 popularProductsContainer.innerHTML = popularProducts.slice(0, 5).map(product => `
                     <tr>
                         <td>
-                            <img src="https://facefit.onrender.com/${product.images[0]}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover;">
+                            <img src="${api.baseURL}/${product.images[0]}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover;">
                         </td>
                         <td>${product.name}</td>
                         <td>${product.numberOfSells || 0}</td>

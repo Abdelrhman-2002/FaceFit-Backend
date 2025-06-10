@@ -5,6 +5,11 @@ const addGlasses = async (req, res) => {
         // Process uploaded files if any
         const data = { ...req.body };
         
+        // Convert string values to appropriate types
+        if (data.price) data.price = parseFloat(data.price);
+        if (data.stock) data.stock = parseInt(data.stock);
+        if (data.weight) data.weight = parseFloat(data.weight);
+        
         // Handle file uploads if present
         if (req.files) {
             // Process regular images
@@ -19,32 +24,114 @@ const addGlasses = async (req, res) => {
                 data.arModels = {};
             }
             
-            // Process AR model files
-            if (req.files.modelArmsOBJ) data.arModels.modelArmsOBJ = req.files.modelArmsOBJ[0].path;
-            if (req.files.modelArmsMTL) data.arModels.modelArmsMTL = req.files.modelArmsMTL[0].path;
-            if (req.files.modelLensesOBJ) data.arModels.modelLensesOBJ = req.files.modelLensesOBJ[0].path;
-            if (req.files.modelLensesMTL) data.arModels.modelLensesMTL = req.files.modelLensesMTL[0].path;
-            if (req.files.modelFrameOBJ) data.arModels.modelFrameOBJ = req.files.modelFrameOBJ[0].path;
-            if (req.files.modelFrameMTL) data.arModels.modelFrameMTL = req.files.modelFrameMTL[0].path;
+            // Helper function to check for and process model files with various naming conventions
+            const processModelFile = (req, fieldNameCamel, fieldNameHyphen, fieldNameLower) => {
+                // Check each possible variant of the field name
+                if (req.files[fieldNameCamel] || 
+                    req.files[fieldNameHyphen] || 
+                    req.files[fieldNameLower]) {
+                    
+                    // Return the first available file's path
+                    if (req.files[fieldNameCamel]) {
+                        return req.files[fieldNameCamel][0].path;
+                    } else if (req.files[fieldNameHyphen]) {
+                        return req.files[fieldNameHyphen][0].path;
+                    } else if (req.files[fieldNameLower]) {
+                        return req.files[fieldNameLower][0].path;
+                    }
+                }
+                return null;
+            };
             
-            // Process material images
-            if (req.files.modelArmsMaterial) {
-                const materialPaths = req.files.modelArmsMaterial.map(file => file.path);
-                data.arModels.modelArmsMaterial = materialPaths;
+            // Process AR model files using our helper function
+            const armsOBJPath = processModelFile(req, 'modelArmsOBJ', 'model-arms-obj', 'modelarmsobj');
+            if (armsOBJPath) {
+                data.arModels.modelArmsOBJ = armsOBJPath;
+                data.tryOn = true;
+            }
+
+            const armsMTLPath = processModelFile(req, 'modelArmsMTL', 'model-arms-mtl', 'modelarmsmtl');
+            if (armsMTLPath) {
+                data.arModels.modelArmsMTL = armsMTLPath;
+            }
+
+            const lensesOBJPath = processModelFile(req, 'modelLensesOBJ', 'model-lenses-obj', 'modellensesobj');
+            if (lensesOBJPath) {
+                data.arModels.modelLensesOBJ = lensesOBJPath;
+                data.tryOn = true;
+            }
+
+            const lensesMTLPath = processModelFile(req, 'modelLensesMTL', 'model-lenses-mtl', 'modellensesmtl');
+            if (lensesMTLPath) {
+                data.arModels.modelLensesMTL = lensesMTLPath;
+            }
+
+            const frameOBJPath = processModelFile(req, 'modelFrameOBJ', 'model-frame-obj', 'modelframeobj');
+            if (frameOBJPath) {
+                data.arModels.modelFrameOBJ = frameOBJPath;
+                data.tryOn = true;
+            }
+
+            const frameMTLPath = processModelFile(req, 'modelFrameMTL', 'model-frame-mtl', 'modelframemtl');
+            if (frameMTLPath) {
+                data.arModels.modelFrameMTL = frameMTLPath;
             }
             
-            if (req.files.modelFrameMaterial) {
-                const materialPaths = req.files.modelFrameMaterial.map(file => file.path);
-                data.arModels.modelFrameMaterial = materialPaths;
+            // Process material images with all possible naming conventions
+            if (req.files.modelArmsMaterial || req.files['model-arms-material'] || req.files.modelarmsmaterial) {
+                let materialFiles;
+                if (req.files.modelArmsMaterial) {
+                    materialFiles = req.files.modelArmsMaterial;
+                } else if (req.files['model-arms-material']) {
+                    materialFiles = req.files['model-arms-material'];
+                } else if (req.files.modelarmsmaterial) {
+                    materialFiles = req.files.modelarmsmaterial;
+                }
+                
+                if (materialFiles) {
+                    const materialPaths = materialFiles.map(file => file.path);
+                    data.arModels.modelArmsMaterial = materialPaths;
+                }
+            }
+            
+            if (req.files.modelFrameMaterial || req.files['model-frame-material'] || req.files.modelframematerial) {
+                let materialFiles;
+                if (req.files.modelFrameMaterial) {
+                    materialFiles = req.files.modelFrameMaterial;
+                } else if (req.files['model-frame-material']) {
+                    materialFiles = req.files['model-frame-material'];
+                } else if (req.files.modelframematerial) {
+                    materialFiles = req.files.modelframematerial;
+                }
+                
+                if (materialFiles) {
+                    const materialPaths = materialFiles.map(file => file.path);
+                    data.arModels.modelFrameMaterial = materialPaths;
+                }
             }
         }
         
+        // Convert tryOn string to boolean if needed
+        if (typeof data.tryOn === 'string') {
+            data.tryOn = data.tryOn === 'true';
+        }
+        
         // Convert colors JSON string back to array if needed
-        if (typeof data.colors === 'string' && data.colors.startsWith('[')) {
+        if (typeof data.colors === 'string') {
             try {
-                data.colors = JSON.parse(data.colors);
+                // Check if it's a JSON string
+                if (data.colors.startsWith('[')) {
+                    data.colors = JSON.parse(data.colors);
+                } else {
+                    // Split by comma if it's a comma-separated string
+                    data.colors = data.colors.split(',').map(color => color.trim()).filter(color => color);
+                }
             } catch (e) {
-                console.error('Error parsing colors JSON:', e);
+                console.error('Error parsing colors:', e);
+                return res.status(400).json({
+                    status: "error",
+                    message: "Invalid colors format"
+                });
             }
         }
         
@@ -54,6 +141,7 @@ const addGlasses = async (req, res) => {
             data: glasses
         });
     } catch (error) {
+        console.error("Error adding glasses:", error);
         res.status(400).json({ 
             status: "error",
             message: error.message 
@@ -65,6 +153,16 @@ const updateGlasses = async (req, res) => {
     try {
         // Process uploaded files if any
         const data = { ...req.body };
+        
+        // Convert string values to appropriate types
+        if (data.price) data.price = parseFloat(data.price);
+        if (data.stock) data.stock = parseInt(data.stock);
+        if (data.weight) data.weight = parseFloat(data.weight);
+        
+        // Initialize arModels if needed
+        if (!data.arModels) {
+            data.arModels = {};
+        }
         
         // Handle file uploads if present
         if (req.files) {
@@ -81,24 +179,96 @@ const updateGlasses = async (req, res) => {
                 }
             }
             
-            // Process AR model files
-            if (req.files.modelArmsOBJ) data.arModels = { ...data.arModels, modelArmsOBJ: req.files.modelArmsOBJ[0].path };
-            if (req.files.modelArmsMTL) data.arModels = { ...data.arModels, modelArmsMTL: req.files.modelArmsMTL[0].path };
-            if (req.files.modelLensesOBJ) data.arModels = { ...data.arModels, modelLensesOBJ: req.files.modelLensesOBJ[0].path };
-            if (req.files.modelLensesMTL) data.arModels = { ...data.arModels, modelLensesMTL: req.files.modelLensesMTL[0].path };
-            if (req.files.modelFrameOBJ) data.arModels = { ...data.arModels, modelFrameOBJ: req.files.modelFrameOBJ[0].path };
-            if (req.files.modelFrameMTL) data.arModels = { ...data.arModels, modelFrameMTL: req.files.modelFrameMTL[0].path };
+            // Helper function to check for and process model files with various naming conventions
+            const processModelFile = (req, fieldNameCamel, fieldNameHyphen, fieldNameLower) => {
+                // Check each possible variant of the field name
+                if (req.files[fieldNameCamel] || 
+                    req.files[fieldNameHyphen] || 
+                    req.files[fieldNameLower]) {
+                
+                    // Return the first available file's path
+                    if (req.files[fieldNameCamel]) {
+                        return req.files[fieldNameCamel][0].path;
+                    } else if (req.files[fieldNameHyphen]) {
+                        return req.files[fieldNameHyphen][0].path;
+                    } else if (req.files[fieldNameLower]) {
+                        return req.files[fieldNameLower][0].path;
+                    }
+                }
+                return null;
+            };
             
-            // Process material images
-            if (req.files.modelArmsMaterial) {
-                const materialPaths = req.files.modelArmsMaterial.map(file => file.path);
-                data.arModels = { ...data.arModels, modelArmsMaterial: materialPaths };
+            // Process AR model files using our helper function
+            const armsOBJPath = processModelFile(req, 'modelArmsOBJ', 'model-arms-obj', 'modelarmsobj');
+            if (armsOBJPath) {
+                data.arModels.modelArmsOBJ = armsOBJPath;
+                data.tryOn = true;
+            }
+
+            const armsMTLPath = processModelFile(req, 'modelArmsMTL', 'model-arms-mtl', 'modelarmsmtl');
+            if (armsMTLPath) {
+                data.arModels.modelArmsMTL = armsMTLPath;
+            }
+
+            const lensesOBJPath = processModelFile(req, 'modelLensesOBJ', 'model-lenses-obj', 'modellensesobj');
+            if (lensesOBJPath) {
+                data.arModels.modelLensesOBJ = lensesOBJPath;
+                data.tryOn = true;
+            }
+
+            const lensesMTLPath = processModelFile(req, 'modelLensesMTL', 'model-lenses-mtl', 'modellensesmtl');
+            if (lensesMTLPath) {
+                data.arModels.modelLensesMTL = lensesMTLPath;
+            }
+
+            const frameOBJPath = processModelFile(req, 'modelFrameOBJ', 'model-frame-obj', 'modelframeobj');
+            if (frameOBJPath) {
+                data.arModels.modelFrameOBJ = frameOBJPath;
+                data.tryOn = true;
+            }
+
+            const frameMTLPath = processModelFile(req, 'modelFrameMTL', 'model-frame-mtl', 'modelframemtl');
+            if (frameMTLPath) {
+                data.arModels.modelFrameMTL = frameMTLPath;
             }
             
-            if (req.files.modelFrameMaterial) {
-                const materialPaths = req.files.modelFrameMaterial.map(file => file.path);
-                data.arModels = { ...data.arModels, modelFrameMaterial: materialPaths };
+            // Process material images with all possible naming conventions
+            if (req.files.modelArmsMaterial || req.files['model-arms-material'] || req.files.modelarmsmaterial) {
+                let materialFiles;
+                if (req.files.modelArmsMaterial) {
+                    materialFiles = req.files.modelArmsMaterial;
+                } else if (req.files['model-arms-material']) {
+                    materialFiles = req.files['model-arms-material'];
+                } else if (req.files.modelarmsmaterial) {
+                    materialFiles = req.files.modelarmsmaterial;
+                }
+                
+                if (materialFiles) {
+                    const materialPaths = materialFiles.map(file => file.path);
+                    data.arModels.modelArmsMaterial = materialPaths;
+                }
             }
+            
+            if (req.files.modelFrameMaterial || req.files['model-frame-material'] || req.files.modelframematerial) {
+                let materialFiles;
+                if (req.files.modelFrameMaterial) {
+                    materialFiles = req.files.modelFrameMaterial;
+                } else if (req.files['model-frame-material']) {
+                    materialFiles = req.files['model-frame-material'];
+                } else if (req.files.modelframematerial) {
+                    materialFiles = req.files.modelframematerial;
+                }
+                
+                if (materialFiles) {
+                    const materialPaths = materialFiles.map(file => file.path);
+                    data.arModels.modelFrameMaterial = materialPaths;
+                }
+            }
+        }
+        
+        // Convert tryOn string to boolean if needed
+        if (typeof data.tryOn === 'string') {
+            data.tryOn = data.tryOn === 'true';
         }
         
         // Process deletedImages if provided
@@ -112,11 +282,21 @@ const updateGlasses = async (req, res) => {
         }
         
         // Convert colors JSON string back to array if needed
-        if (typeof data.colors === 'string' && data.colors.startsWith('[')) {
+        if (typeof data.colors === 'string') {
             try {
-                data.colors = JSON.parse(data.colors);
+                // Check if it's a JSON string
+                if (data.colors.startsWith('[')) {
+                    data.colors = JSON.parse(data.colors);
+                } else {
+                    // Split by comma if it's a comma-separated string
+                    data.colors = data.colors.split(',').map(color => color.trim()).filter(color => color);
+                }
             } catch (e) {
-                console.error('Error parsing colors JSON:', e);
+                console.error('Error parsing colors:', e);
+                return res.status(400).json({
+                    status: "error",
+                    message: "Invalid colors format"
+                });
             }
         }
         
@@ -132,6 +312,7 @@ const updateGlasses = async (req, res) => {
             data: glasses
         });
     } catch (error) {
+        console.error("Error updating glasses:", error);
         res.status(400).json({ 
             status: "error",
             message: error.message 
