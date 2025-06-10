@@ -19,6 +19,8 @@ const createOrder = async (customerId, orderData) => {
             color: cartItem.color,
             lenseType: cartItem.lenseType,
             prescription: cartItem.prescription ? cartItem.prescription._id : null,
+            lensSpecification: cartItem.lensSpecification || null,
+            lensPrice: cartItem.lensPrice || 0,
             quantity: cartItem.counter,
             price: cartItem.price
         }));

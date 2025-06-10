@@ -73,15 +73,20 @@ const addItemToCart = async (customerId, cartItemData) => {
             price: glasses.price,
             color: cartItemData.color,
             lenseType: cartItemData.lenseType,
-            prescription: cartItemData.prescription
+            prescription: cartItemData.prescription,
+            lensSpecification: cartItemData.lensSpecification,
+            lensPrice: cartItemData.lensPrice || 0
         }], { session });
         
         // If customer doesn't have a cart, create one
         let cart;
+        // Calculate the item total price including lens price if applicable
+        const itemTotalPrice = (glasses.price + (cartItemData.lensPrice || 0)) * (cartItemData.counter || 1);
+        
         if (!customer.cart || customer.cart.length === 0) {
             cart = await Cart.create([{
                 items: [cartItem[0]._id],
-                total: glasses.price * (cartItemData.counter || 1)
+                total: itemTotalPrice
             }], { session });
             
             customer.cart = cart[0]._id;
@@ -94,7 +99,7 @@ const addItemToCart = async (customerId, cartItemData) => {
             }
             
             cart.items.push(cartItem[0]._id);
-            cart.total += glasses.price * (cartItemData.counter || 1);
+            cart.total += itemTotalPrice;
             await cart.save({ session });
         }
         
@@ -141,8 +146,8 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
             throw new Error("Cart item not found");
         }
         
-        // Calculate old total
-        const oldTotal = cartItem.price * cartItem.counter;
+        // Calculate old total (including lens price)
+        const oldTotal = (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.counter;
         
         // Update counter if provided
         if (updateData.counter !== undefined) {
@@ -160,16 +165,28 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
         
         if (updateData.lenseType !== undefined) {
             cartItem.lenseType = updateData.lenseType;
+            
+            // If changing from Prescription to No-Prescription, remove lens specifications
+            if (updateData.lenseType === 'No-Prescription') {
+                cartItem.lensSpecification = undefined;
+                cartItem.lensPrice = 0;
+            }
         }
         
         if (updateData.prescription !== undefined) {
             cartItem.prescription = updateData.prescription;
         }
         
+        // Update lens specification if provided
+        if (updateData.lensSpecification !== undefined && cartItem.lenseType === 'Prescription') {
+            cartItem.lensSpecification = updateData.lensSpecification;
+            cartItem.lensPrice = 50;
+        }
+        
         await cartItem.save({ session });
         
-        // Calculate new total and update cart
-        const newTotal = cartItem.price * cartItem.counter;
+        // Calculate new total and update cart (including lens price)
+        const newTotal = (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.counter;
         cart.total = cart.total - oldTotal + newTotal;
         await cart.save({ session });
         

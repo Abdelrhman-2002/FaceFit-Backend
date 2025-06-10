@@ -247,6 +247,7 @@ class OrdersPage {
                                 <th>Size</th>
                                 <th>Color</th>
                                 <th>Lense Type</th>
+                                <th>Lens Specification</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
                                 <th>Subtotal</th>
@@ -264,14 +265,29 @@ class OrdersPage {
                                     <td>${item.size}</td>
                                     <td>${item.color}</td>
                                     <td>${item.lenseType}</td>
-                                    <td>${item.counter}</td>
+                                    <td>${item.lenseType === 'Prescription' && item.lensSpecification ? 
+                                        `<span class="badge bg-info">${item.lensSpecification}</span>
+                                         ${item.lensPrice ? `<span class="badge bg-secondary">+EGP ${item.lensPrice}</span>` : ''}` : 
+                                        'N/A'}</td>
+                                    <td>${item.counter || item.quantity}</td>
                                     <td>$${item.price.toFixed(2)}</td>
-                                    <td>$${(item.price * item.counter).toFixed(2)}</td>
+                                    <td>$${((item.price + (item.lensPrice || 0)) * (item.counter || item.quantity)).toFixed(2)}</td>
                                 </tr>
-                                ${item.lenseType === 'Prescription' && item.prescription ? `
+                                ${item.lenseType === 'Prescription' ? `
                                     <tr>
-                                        <td colspan="7">
+                                        <td colspan="8">
                                             <div class="prescription-details p-2 bg-light">
+                                                ${item.lensSpecification ? `
+                                                <div class="lens-specification mb-3">
+                                                    <h6 class="mb-2 text-primary">Lens Specification</h6>
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <span class="badge bg-info me-2 p-2">${item.lensSpecification}</span>
+                                                        ${item.lensPrice ? `<span class="badge bg-secondary p-2">Additional Cost: EGP ${item.lensPrice}</span>` : ''}
+                                                    </div>
+                                                </div>
+                                                ` : ''}
+                                                
+                                                ${item.prescription ? `
                                                 <h6 class="mb-2">Prescription Details</h6>
                                                 <div class="row">
                                                     <div class="col-md-6">
@@ -283,6 +299,7 @@ class OrdersPage {
                                                         <p class="mb-1"><strong>ADD:</strong> ${item.prescription.ADD}</p>
                                                     </div>
                                                 </div>
+                                                ` : ''}
                                             </div>
                                         </td>
                                     </tr>
@@ -291,7 +308,7 @@ class OrdersPage {
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="6" class="text-end"><strong>Total:</strong></td>
+                                <td colspan="7" class="text-end"><strong>Total:</strong></td>
                                 <td><strong>$${order.total.toFixed(2)}</strong></td>
                             </tr>
                         </tfoot>

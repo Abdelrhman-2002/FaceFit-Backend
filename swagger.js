@@ -196,8 +196,8 @@ const options = {
             },
             paymentMethod: {
               type: 'string',
-              enum: ['credit card', 'cash'],
-              description: 'Payment method used',
+              enum: ['cash'],
+              description: 'Payment method used (cash only)',
             },
             address: {
               type: 'string',

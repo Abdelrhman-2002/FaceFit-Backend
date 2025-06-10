@@ -17,6 +17,12 @@ const addToCart = async (customerId, cartItemData) => {
             prescription: cartItemData.lenseType === 'Prescription' ? cartItemData.prescriptionId : null
         };
 
+        // Add lens specification and lens price if prescription is selected
+        if (cartItemData.lenseType === 'Prescription') {
+            cartData.lensSpecification = cartItemData.lensSpecification;
+            cartData.lensPrice = 50; // Add 50 for lens specification
+        }
+
         return await cartRepo.addItemToCart(customerId, cartData);
     } catch (error) {
         console.error("Error in addToCart:", error);
@@ -65,11 +71,25 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
             // If lense type is changed to Prescription, we need a prescription ID
             if (updateData.lenseType === 'Prescription' && updateData.prescriptionId) {
                 updateCartData.prescription = updateData.prescriptionId;
+                
+                // If lens specification is provided, update it along with the price
+                if (updateData.lensSpecification) {
+                    updateCartData.lensSpecification = updateData.lensSpecification;
+                    updateCartData.lensPrice = 50;
+                }
             } else if (updateData.lenseType === 'No-Prescription') {
                 updateCartData.prescription = null;
+                updateCartData.lensSpecification = null;
+                updateCartData.lensPrice = 0;
             }
         } else if (updateData.prescriptionId && updateData.lenseType === 'Prescription') {
             updateCartData.prescription = updateData.prescriptionId;
+        }
+        
+        // Handle lens specification update separately
+        if (updateData.lensSpecification && !updateData.lenseType) {
+            updateCartData.lensSpecification = updateData.lensSpecification;
+            updateCartData.lensPrice = 50;
         }
         
         return await cartRepo.updateCartItem(customerId, cartItemId, updateCartData);

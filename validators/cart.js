@@ -9,7 +9,11 @@ const addToCart = [
     body('prescriptionId')
         .if(body('lenseType').equals('Prescription'))
         .isMongoId()
-        .withMessage('Prescription ID is required for prescription lenses')
+        .withMessage('Prescription ID is required for prescription lenses'),
+    body('lensSpecification')
+        .if(body('lenseType').equals('Prescription'))
+        .isIn(['Standard Eyeglass Lenses', 'Blue Light Blocking', 'Driving Lenses'])
+        .withMessage('A valid lens specification is required for prescription lenses')
 ];
 
 const updateCartItem = [
@@ -21,7 +25,11 @@ const updateCartItem = [
     body('prescriptionId')
         .if(body('lenseType').equals('Prescription'))
         .isMongoId()
-        .withMessage('Prescription ID is required for prescription lenses')
+        .withMessage('Prescription ID is required for prescription lenses'),
+    body('lensSpecification')
+        .if(body('lenseType').equals('Prescription'))
+        .isIn(['Standard Eyeglass Lenses', 'Blue Light Blocking', 'Driving Lenses'])
+        .withMessage('A valid lens specification is required for prescription lenses')
 ];
 
 module.exports = {

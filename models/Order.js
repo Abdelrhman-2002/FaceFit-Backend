@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema({
     date: { type: Date, required: true },
     status: { type: String, required: true, enum: ["pending", "shipped", "delivered"] },
     total: { type: Number, required: true },
-    paymentMethod: { type: String, required: true, enum: ["credit card", "cash"] },
+    paymentMethod: { type: String, required: true, enum: ["cash"], default: "cash" },
     address: { type: String, required: true },
     phone: { type: String, required: true },
     deliveryDate: { type: Date },
@@ -15,6 +15,8 @@ const orderSchema = new mongoose.Schema({
         color: { type: String, required: true },
         lenseType: { type: String, enum: ["No-Prescription", "Prescription"], required: true },
         prescription: { type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' },
+        lensSpecification: { type: String, enum: ["Standard Eyeglass Lenses", "Blue Light Blocking", "Driving Lenses"] },
+        lensPrice: { type: Number },
         quantity: { type: Number, required: true },
         price: { type: Number, required: true }
     }],
