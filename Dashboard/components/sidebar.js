@@ -1,6 +1,7 @@
 // Sidebar component
 class Sidebar {
-    constructor() {
+    constructor(currentPage = 'dashboard') {
+        this.currentPage = currentPage;
         this.template = `
             <div class="d-flex flex-column h-100">
                 <div class="sidebar-header p-3 mb-3 border-bottom">
@@ -9,39 +10,27 @@ class Sidebar {
                 
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <a href="#" class="nav-link active" data-page="dashboard">
+                        <a href="#" class="nav-link ${currentPage === 'dashboard' ? 'active' : ''}" data-page="dashboard">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-page="glasses">
+                        <a href="#" class="nav-link ${currentPage === 'glasses' ? 'active' : ''}" data-page="glasses">
                             <i class="bi bi-eyeglasses"></i>
                             <span>Glasses</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-page="orders">
+                        <a href="#" class="nav-link ${currentPage === 'orders' ? 'active' : ''}" data-page="orders">
                             <i class="bi bi-cart3"></i>
                             <span>Orders</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="#" class="nav-link" data-page="customers">
+                        <a href="#" class="nav-link ${currentPage === 'customers' ? 'active' : ''}" data-page="customers">
                             <i class="bi bi-people"></i>
                             <span>Customers</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" data-page="reviews">
-                            <i class="bi bi-star"></i>
-                            <span>Reviews</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" data-page="settings">
-                            <i class="bi bi-gear"></i>
-                            <span>Settings</span>
                         </a>
                     </li>
                 </ul>
@@ -61,6 +50,21 @@ class Sidebar {
         return this.template;
     }
     
+    // Set the active page
+    setActivePage(page) {
+        this.currentPage = page;
+        const navLinks = document.querySelectorAll('.sidebar .nav-link');
+        
+        navLinks.forEach(link => {
+            const linkPage = link.getAttribute('data-page');
+            if (linkPage === page) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+    
     // Add event listeners to sidebar elements
     addEventListeners() {
         const navLinks = document.querySelectorAll('.sidebar .nav-link');
@@ -69,14 +73,11 @@ class Sidebar {
             link.addEventListener('click', (e) => {
                 e.preventDefault();
                 
-                // Remove active class from all links
-                navLinks.forEach(l => l.classList.remove('active'));
-                
-                // Add active class to clicked link
-                link.classList.add('active');
-                
                 // Get the page to load
                 const page = link.getAttribute('data-page');
+                
+                // Set this page as active
+                this.setActivePage(page);
                 
                 // Navigate to the selected page
                 window.navigateTo(page);

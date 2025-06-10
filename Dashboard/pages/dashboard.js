@@ -19,9 +19,6 @@ class DashboardPage {
                     <div class="data-table-container">
                         <div class="data-table-header">
                             <h3>Recent Orders</h3>
-                            <div class="data-table-actions">
-                                <button class="btn btn-sm btn-outline-primary">View All</button>
-                            </div>
                         </div>
                         
                         <div class="table-responsive">
@@ -33,7 +30,6 @@ class DashboardPage {
                                         <th>Date</th>
                                         <th>Total</th>
                                         <th>Status</th>
-                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody id="recent-orders">
@@ -48,9 +44,6 @@ class DashboardPage {
                     <div class="data-table-container">
                         <div class="data-table-header">
                             <h3>Popular Products</h3>
-                            <div class="data-table-actions">
-                                <button class="btn btn-sm btn-outline-primary">View All</button>
-                            </div>
                         </div>
                         
                         <div class="table-responsive">
@@ -94,7 +87,7 @@ class DashboardPage {
     
     // Load sidebar component
     loadSidebar() {
-        const sidebar = new Sidebar();
+        const sidebar = new Sidebar('dashboard');
         document.getElementById('sidebar').innerHTML = sidebar.render();
         sidebar.addEventListeners();
     }
@@ -128,9 +121,6 @@ class DashboardPage {
                         <td>${new Date(order.createdAt).toLocaleDateString()}</td>
                         <td>$${order.total?.toFixed(2) || '0.00'}</td>
                         <td><span class="badge bg-${this.getStatusColor(order.status)}">${order.status}</span></td>
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary">View</button>
-                        </td>
                     </tr>
                 `).join('');
             } else {

@@ -50,6 +50,32 @@ const getAuthToken = () => {
     return localStorage.getItem(AUTH_TOKEN_KEY);
 };
 
+// Function to check if token is valid (basic check)
+const isTokenValid = async () => {
+    const token = getAuthToken();
+    if (!token) return false;
+    
+    try {
+        // Try a simple authenticated request to verify token
+        const response = await axios.get('/admin/stats');
+        return response.status === 200;
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            // Token is invalid, clear auth data
+            logout();
+            return false;
+        }
+        // For other errors, assume token is still valid but there's a network/server issue
+        return true;
+    }
+};
+
+// Enhanced authentication check
+const isAuthenticatedAndValid = async () => {
+    if (!isAuthenticated()) return false;
+    return await isTokenValid();
+};
+
 // Auth-related event listeners
 document.addEventListener('DOMContentLoaded', () => {
     // Handle logout buttons

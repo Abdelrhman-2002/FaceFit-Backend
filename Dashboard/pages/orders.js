@@ -148,7 +148,7 @@ class OrdersPage {
     
     // Load sidebar component
     loadSidebar() {
-        const sidebar = new Sidebar();
+        const sidebar = new Sidebar('orders');
         document.getElementById('sidebar').innerHTML = sidebar.render();
         sidebar.addEventListeners();
     }

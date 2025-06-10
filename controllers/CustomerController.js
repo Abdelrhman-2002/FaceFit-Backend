@@ -1,7 +1,7 @@
 const customerService = require("../services/customerService");
 const jsend = require("jsend");
 const { validationResult } = require("express-validator");
-const upload = require("../middlewares/upload");
+const { deleteImageFiles } = require("../middlewares/upload");
 
 const signup = async (req, res) => {
   try {

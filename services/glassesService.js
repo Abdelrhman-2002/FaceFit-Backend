@@ -20,6 +20,10 @@ const getAllGlasses = async () => {
     return await GlassesRepo.getAll();
 };
 
+const getGlassesById = async (id) => {
+    return await GlassesRepo.getById(id);
+};
+
 const getBestSellers = async () => {
     return await GlassesRepo.getBestSellers();
 };
@@ -38,6 +42,7 @@ module.exports = {
     searchGlasses,
     deleteGlasses,
     getAllGlasses,
+    getGlassesById,
     getBestSellers,
     getNewArrivals,
     getTryOnGlasses

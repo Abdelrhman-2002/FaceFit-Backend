@@ -19,6 +19,7 @@ const port = config.port || 3000;
 
 
 app.use('/uploads', express.static('uploads'));
+app.use('/dashboard', express.static('Dashboard'));
 
 app.use(cors());
 

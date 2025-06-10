@@ -1,6 +1,8 @@
 // API utilities
+// const BASE_URL = 'https://facefit.onrender.com/facefit'; // Production server
 const BASE_URL = 'http://localhost:5007/facefit'; // Local development server
-
+// const imageBaseURL = 'https://facefit.onrender.com/uploads/glasses/'; // Base URL for images
+const imageBaseURL = 'http://localhost:5007/uploads/glasses/'; // Base URL for images
 // Configure axios defaults
 axios.defaults.baseURL = BASE_URL;
 
@@ -29,6 +31,10 @@ axios.interceptors.response.use(
             const isLoginRequest = error.config.url.includes('/admin/login');
             if (!isLoginRequest) {
                 console.log('401 error detected, logging out');
+                // Show a user-friendly message
+                if (typeof notifications !== 'undefined') {
+                    notifications.warning('Your session has expired. Please log in again.');
+                }
                 logout();
             }
         }
@@ -38,6 +44,7 @@ axios.interceptors.response.use(
 
 // API functions for different entities
 const api = {
+    baseURL: imageBaseURL,
     // Admin endpoints
     admin: {
         login: (email, password) => axios.post('/admin/login', { email, password }),
@@ -46,10 +53,39 @@ const api = {
     
     // Glasses endpoints
     glasses: {
-        getAll: (params) => axios.get('/glasses/all', { params }),
+        getAll: () => axios.get('/glasses/all'),
         getById: (id) => axios.get(`/glasses/${id}`),
         create: (data) => axios.post('/glasses/add', data),
-        update: (id, data) => axios.put(`/glasses/update/${id}`, data),
+        update: (id, data) => {
+            // If data is FormData, we can just send it directly
+            if (data instanceof FormData) {
+                // Add deletedImages if present
+                const deletedImagesInput = document.getElementById('deleted-images');
+                if (deletedImagesInput && deletedImagesInput.value) {
+                    const deletedImages = deletedImagesInput.value.split(',').filter(img => img.trim() !== '');
+                    if (deletedImages.length > 0) {
+                        // Add each deleted image path to the FormData
+                        deletedImages.forEach(img => {
+                            data.append('deletedImages', img);
+                        });
+                    }
+                }
+                return axios.put(`/glasses/update/${id}`, data, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
+            }
+            // For JSON data, check if we have deleted images to include
+            const deletedImagesInput = document.getElementById('deleted-images');
+            if (deletedImagesInput && deletedImagesInput.value) {
+                const deletedImages = deletedImagesInput.value.split(',').filter(img => img.trim() !== '');
+                if (deletedImages.length > 0) {
+                    data.deletedImages = deletedImages;
+                }
+            }
+            return axios.put(`/glasses/update/${id}`, data);
+        },
         delete: (id) => axios.delete(`/glasses/delete/${id}`)
     },
     

@@ -39,7 +39,7 @@ class CustomersPage {
                             <table class="table">
                                 <thead>
                                     <tr>
-                                        <th>Profile</th>
+                                        <th>Image</th>
                                         <th>Name</th>
                                         <th>Email</th>
                                         <th>Phone</th>
@@ -108,7 +108,7 @@ class CustomersPage {
     
     // Load sidebar component
     loadSidebar() {
-        const sidebar = new Sidebar();
+        const sidebar = new Sidebar('customers');
         document.getElementById('sidebar').innerHTML = sidebar.render();
         sidebar.addEventListeners();
     }
@@ -245,7 +245,7 @@ class CustomersPage {
             customerDetailsContent.innerHTML = `
                 <div class="row">
                     <div class="col-md-4 text-center mb-4">
-                        <img src="https://facefit.onrender.com/uploads/usersPictures/${customer.profilePicture || 'default.jpg'}" alt="${customer.firstName}" class="rounded-circle img-fluid mb-3" style="max-width: 150px;">
+                        <img src="http://localhost:5007/uploads/usersPictures/${customer.profilePicture || '/uploads/usersPictures/default.jpg'}" alt="${customer.firstName}" class="rounded-circle img-fluid mb-3" style="max-width: 150px;">
                         <h5>${customer.firstName} ${customer.lastName}</h5>
                         <p class="text-muted">Customer ID: ${customer._id}</p>
                     </div>
