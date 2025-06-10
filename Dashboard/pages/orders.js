@@ -325,7 +325,7 @@ class OrdersPage {
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="${item.item.images[0]}" alt="${item.item.name}" class="me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            <img src="http://localhost:5007/${item.item.images[0]}" alt="${item.item.name}" class="me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                             ${item.item.name}
                                         </div>
                                     </td>

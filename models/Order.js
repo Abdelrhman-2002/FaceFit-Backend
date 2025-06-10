@@ -10,7 +10,6 @@ const orderSchema = new mongoose.Schema({
     phone: { type: String, required: true },
     deliveryDate: { type: Date },
     cart: { type: [mongoose.Schema.Types.ObjectId], ref: 'Cart' },
-    Prescription: { type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' }
 });
 
 const Order = mongoose.model('Order', orderSchema);

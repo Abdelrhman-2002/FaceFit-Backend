@@ -1,3 +1,4 @@
+
 // Dashboard main page component
 class DashboardPage {
     constructor() {
@@ -117,19 +118,19 @@ class DashboardPage {
                 recentOrdersContainer.innerHTML = recentOrders.slice(0, 5).map(order => `
                     <tr>
                         <td>#${order._id.substring(0, 8)}</td>
-                        <td>${order.customer?.name || 'Unknown'}</td>
-                        <td>${new Date(order.createdAt).toLocaleDateString()}</td>
+                        <td>${order.customer ? `${order.customer.firstName} ${order.customer.lastName}` : 'Unknown'}</td>
+                        <td>${new Date(order.date).toLocaleDateString()}</td>
                         <td>$${order.total?.toFixed(2) || '0.00'}</td>
                         <td><span class="badge bg-${this.getStatusColor(order.status)}">${order.status}</span></td>
                     </tr>
                 `).join('');
             } else {
-                recentOrdersContainer.innerHTML = '<tr><td colspan="6" class="text-center">No recent orders found</td></tr>';
+                recentOrdersContainer.innerHTML = '<tr><td colspan="5" class="text-center">No recent orders found</td></tr>';
             }
         } catch (error) {
             console.error('Error loading recent orders:', error);
             const recentOrdersContainer = document.getElementById('recent-orders');
-            recentOrdersContainer.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error loading orders</td></tr>';
+            recentOrdersContainer.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Error loading orders</td></tr>';
         }
     }
 
@@ -144,7 +145,7 @@ class DashboardPage {
                 popularProductsContainer.innerHTML = popularProducts.slice(0, 5).map(product => `
                     <tr>
                         <td>
-                            <img src="${api.baseURL}/${product.images[0]}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover;">
+                            <img src="http://localhost:5007/${product.images[0]}" alt="${product.name}" style="width: 40px; height: 40px; object-fit: cover;">
                         </td>
                         <td>${product.name}</td>
                         <td>${product.numberOfSells || 0}</td>

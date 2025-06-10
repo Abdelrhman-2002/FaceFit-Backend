@@ -413,7 +413,7 @@ class GlassesPage {
                             <img src="${glasses.images && glasses.images.length > 0 ? 
                                 (glasses.images[0].includes('http') ? 
                                     glasses.images[0] : 
-                                    `${api.baseURL}${glasses.images[0].replace('uploads/glasses/', '')}`) : 
+                                    `http://localhost:5007/${glasses.images[0]}`) : 
                                 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iI2Y4ZjlmYSIvPjx0ZXh0IHg9IjUwIiB5PSI1MCIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjEyIiBmaWxsPSIjNmM3NTdkIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSI+Tm8gSW1hZ2U8L3RleHQ+PC9zdmc+'}" 
                                 alt="${glasses.name}" 
                                 style="width: 50px; height: 50px; object-fit: cover;"
@@ -570,7 +570,7 @@ class GlassesPage {
                     if (imgSrc.startsWith('http')) {
                         img.src = imgSrc;
                     } else {
-                        img.src = `${api.baseURL}${imgSrc.replace('uploads/glasses/', '')}`;
+                        img.src = `http://localhost:5007/${imgSrc}`;
                     }
                     
                     img.classList.add('img-thumbnail');

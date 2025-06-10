@@ -167,7 +167,7 @@ class CustomersPage {
                 customersListContainer.innerHTML = customers.map(customer => `
                     <tr>
                         <td>
-                            <img src="https://facefit.onrender.com/uploads/usersPictures/${customer.profilePicture || 'default.jpg'}" alt="${customer.firstName}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                            <img src="http://localhost:5007/uploads/usersPictures/${customer.profilePicture || 'default.jpg'}" alt="${customer.firstName}" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                         </td>
                         <td>${customer.firstName} ${customer.lastName}</td>
                         <td>${customer.email}</td>
