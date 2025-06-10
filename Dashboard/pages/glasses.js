@@ -49,12 +49,6 @@ class GlassesPage {
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <nav aria-label="Glasses pagination">
-                            <ul class="pagination justify-content-center" id="glasses-pagination">
-                                <!-- Pagination will be generated dynamically -->
-                            </ul>
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -442,19 +436,6 @@ class GlassesPage {
             } else {
                 glassesListContainer.innerHTML = '<tr><td colspan="7" class="text-center">No glasses found</td></tr>';
             }
-            
-            // Add pagination (simplified)
-            document.getElementById('glasses-pagination').innerHTML = `
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            `;
         } catch (error) {
             console.error('Error loading glasses:', error);
             

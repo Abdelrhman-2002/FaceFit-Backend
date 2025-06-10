@@ -17,34 +17,6 @@ class OrdersPage {
                             <h3>Customer Orders</h3>
                         </div>
                         
-                        <div class="filters mb-3">
-                            <div class="row">
-                                <div class="col-md-3">
-                                    <select class="form-select" id="filter-status">
-                                        <option value="">All Statuses</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="shipped">Shipped</option>
-                                        <option value="delivered">Delivered</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <select class="form-select" id="filter-payment">
-                                        <option value="">All Payment Methods</option>
-                                        <option value="credit card">Credit Card</option>
-                                        <option value="cash">Cash</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group">
-                                        <input type="text" class="form-control" id="search-orders" placeholder="Search by order ID or customer...">
-                                        <button class="btn btn-outline-secondary" type="button" id="search-orders-btn">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
                         <div class="table-responsive">
                             <table class="table">
                                 <thead>
@@ -65,12 +37,6 @@ class OrdersPage {
                                 </tbody>
                             </table>
                         </div>
-                        
-                        <nav aria-label="Orders pagination">
-                            <ul class="pagination justify-content-center" id="orders-pagination">
-                                <!-- Pagination will be generated dynamically -->
-                            </ul>
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -162,16 +128,6 @@ class OrdersPage {
     
     // Set up event listeners
     setupEventListeners() {
-        // Filter and search listeners
-        document.getElementById('filter-status').addEventListener('change', () => this.loadOrdersData());
-        document.getElementById('filter-payment').addEventListener('change', () => this.loadOrdersData());
-        document.getElementById('search-orders-btn').addEventListener('click', () => this.loadOrdersData());
-        document.getElementById('search-orders').addEventListener('keyup', (e) => {
-            if (e.key === 'Enter') {
-                this.loadOrdersData();
-            }
-        });
-        
         // Save status button
         const saveStatusBtn = document.getElementById('save-status-btn');
         saveStatusBtn.addEventListener('click', () => this.handleUpdateStatus());
@@ -183,18 +139,7 @@ class OrdersPage {
         ordersListContainer.innerHTML = '<tr><td colspan="7" class="text-center">Loading orders...</td></tr>';
         
         try {
-            // Get filter values
-            const statusFilter = document.getElementById('filter-status').value;
-            const paymentFilter = document.getElementById('filter-payment').value;
-            const searchQuery = document.getElementById('search-orders').value;
-            
-            // Construct query params
-            let queryParams = new URLSearchParams();
-            if (statusFilter) queryParams.append('status', statusFilter);
-            if (paymentFilter) queryParams.append('paymentMethod', paymentFilter);
-            if (searchQuery) queryParams.append('search', searchQuery);
-            
-            const response = await api.orders.getAll(Object.fromEntries(queryParams.entries()));
+            const response = await api.orders.getAll();
             const orders = response.data.data || [];
             
             if (orders.length > 0) {
@@ -226,19 +171,6 @@ class OrdersPage {
             } else {
                 ordersListContainer.innerHTML = '<tr><td colspan="7" class="text-center">No orders found</td></tr>';
             }
-            
-            // Add pagination (simplified)
-            document.getElementById('orders-pagination').innerHTML = `
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            `;
         } catch (error) {
             console.error('Error loading orders:', error);
             ordersListContainer.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading orders</td></tr>';

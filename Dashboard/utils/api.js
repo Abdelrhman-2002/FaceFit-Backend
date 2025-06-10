@@ -98,7 +98,7 @@ const api = {
     // Orders endpoints
     orders: {
         getAll: (params) => axios.get('/orders/admin/all', { params }),
-        getById: (id) => axios.get(`/orders/${id}`),
+        getById: (id) => axios.get(`/orders/admin/${id}`),
         updateStatus: (id, status) => axios.put(`/orders/admin/${id}/status`, { status })
     },
     
