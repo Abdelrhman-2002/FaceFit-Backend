@@ -180,22 +180,67 @@ const options = {
               type: 'string',
               description: 'ID of the customer who placed the order',
             },
+            date: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Date the order was placed',
+            },
+            status: {
+              type: 'string',
+              enum: ['pending', 'shipped', 'delivered'],
+              description: 'Current status of the order',
+            },
+            total: {
+              type: 'number',
+              description: 'Total amount of the order',
+            },
+            paymentMethod: {
+              type: 'string',
+              enum: ['credit card', 'cash'],
+              description: 'Payment method used',
+            },
+            address: {
+              type: 'string',
+              description: 'Shipping address',
+            },
+            phone: {
+              type: 'string',
+              description: 'Contact phone number',
+            },
+            deliveryDate: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Expected delivery date',
+            },
             items: {
               type: 'array',
               items: {
                 type: 'object',
                 properties: {
-                  glasses: {
+                  item: {
                     type: 'string',
                     description: 'ID of the glasses item',
                   },
-                  quantity: {
-                    type: 'number',
-                    description: 'Quantity of this item',
+                  size: {
+                    type: 'string',
+                    description: 'Size of the glasses',
+                  },
+                  color: {
+                    type: 'string',
+                    description: 'Color of the glasses',
+                  },
+                  lenseType: {
+                    type: 'string',
+                    enum: ['No-Prescription', 'Prescription'],
+                    description: 'Type of lenses',
                   },
                   prescription: {
                     type: 'string',
                     description: 'ID of the prescription if applicable',
+                  },
+                  quantity: {
+                    type: 'number',
+                    description: 'Quantity of this item',
                   },
                   price: {
                     type: 'number',
@@ -203,30 +248,6 @@ const options = {
                   },
                 },
               },
-            },
-            totalAmount: {
-              type: 'number',
-              description: 'Total amount of the order',
-            },
-            status: {
-              type: 'string',
-              enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
-              description: 'Current status of the order',
-            },
-            shippingAddress: {
-              type: 'object',
-              properties: {
-                street: { type: 'string' },
-                city: { type: 'string' },
-                state: { type: 'string' },
-                zipCode: { type: 'string' },
-                country: { type: 'string' },
-              },
-            },
-            createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Date the order was placed',
             },
           },
         },

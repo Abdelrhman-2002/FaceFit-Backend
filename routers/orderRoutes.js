@@ -12,5 +12,5 @@ router.get("/:orderId", customerAuth, orderController.getOrderById);
 // Admin order routes
 router.get("/admin/all", adminAuth, orderController.getAllOrders);
 router.put("/admin/:orderId/status", adminAuth, updateOrderStatus, orderController.updateOrderStatus);
-
+router.get("/admin/:orderId", adminAuth, orderController.getOrderById);
 module.exports = router; 

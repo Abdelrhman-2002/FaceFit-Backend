@@ -37,8 +37,8 @@ const getOrderById = async (req, res) => {
         const orderId = req.params.orderId;
         const order = await orderService.getOrderById(orderId);
         
-        // Check if order belongs to the customer
-        if (order.customer._id.toString() !== req.customerId) {
+        // Check if order belongs to the customer (only for customer routes)
+        if (req.customerId && order.customer._id.toString() !== req.customerId) {
             return res.status(403).json({ error: "Unauthorized to access this order" });
         }
         

@@ -25,13 +25,12 @@ const createOrder = async (orderData) => {
         return await Order.findById(order[0]._id)
             .populate('customer')
             .populate({
-                path: 'cart',
-                populate: {
-                    path: 'items',
-                    populate: {
-                        path: 'item prescription'
-                    }
-                }
+                path: 'items.item',
+                model: 'Glasses'
+            })
+            .populate({
+                path: 'items.prescription',
+                model: 'Prescription'
             });
     } catch (error) {
         await session.abortTransaction();
@@ -47,13 +46,12 @@ const getOrderById = async (orderId) => {
         const order = await Order.findById(orderId)
             .populate('customer')
             .populate({
-                path: 'cart',
-                populate: {
-                    path: 'items',
-                    populate: {
-                        path: 'item prescription'
-                    }
-                }
+                path: 'items.item',
+                model: 'Glasses'
+            })
+            .populate({
+                path: 'items.prescription',
+                model: 'Prescription'
             });
         
         if (!order) {
@@ -73,13 +71,12 @@ const getCustomerOrders = async (customerId) => {
         const orders = await Order.find({ customer: customerId })
             .populate('customer')
             .populate({
-                path: 'cart',
-                populate: {
-                    path: 'items',
-                    populate: {
-                        path: 'item prescription'
-                    }
-                }
+                path: 'items.item',
+                model: 'Glasses'
+            })
+            .populate({
+                path: 'items.prescription',
+                model: 'Prescription'
             })
             .sort({ date: -1 });
         
@@ -100,13 +97,12 @@ const updateOrderStatus = async (orderId, status) => {
         )
         .populate('customer')
         .populate({
-            path: 'cart',
-            populate: {
-                path: 'items',
-                populate: {
-                    path: 'item prescription'
-                }
-            }
+            path: 'items.item',
+            model: 'Glasses'
+        })
+        .populate({
+            path: 'items.prescription',
+            model: 'Prescription'
         });
         
         if (!order) {
@@ -126,13 +122,12 @@ const getAllOrders = async () => {
         const orders = await Order.find()
             .populate('customer')
             .populate({
-                path: 'cart',
-                populate: {
-                    path: 'items',
-                    populate: {
-                        path: 'item prescription'
-                    }
-                }
+                path: 'items.item',
+                model: 'Glasses'
+            })
+            .populate({
+                path: 'items.prescription',
+                model: 'Prescription'
             })
             .sort({ date: -1 });
         

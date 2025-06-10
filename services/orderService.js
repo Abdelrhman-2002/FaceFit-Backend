@@ -12,6 +12,17 @@ const createOrder = async (customerId, orderData) => {
             throw new Error("Cart is empty");
         }
         
+        // Extract cart items data for the order
+        const orderItems = cart.items.map(cartItem => ({
+            item: cartItem.item._id,
+            size: cartItem.size,
+            color: cartItem.color,
+            lenseType: cartItem.lenseType,
+            prescription: cartItem.prescription ? cartItem.prescription._id : null,
+            quantity: cartItem.counter,
+            price: cartItem.price
+        }));
+        
         // Create order data
         const newOrderData = {
             customer: customerId,
@@ -21,8 +32,7 @@ const createOrder = async (customerId, orderData) => {
             paymentMethod: orderData.paymentMethod,
             address: orderData.address,
             phone: orderData.phone,
-            cart: cart._id,
-            Prescription: null // Set if needed
+            items: orderItems
         };
         
         // Add deliveryDate only if provided, otherwise leave it undefined (optional field)
@@ -33,7 +43,7 @@ const createOrder = async (customerId, orderData) => {
         // Create order
         const order = await orderRepo.createOrder(newOrderData);
         
-        // Create a new empty cart for the customer
+        // Clear the cart after successfully creating the order
         await cartRepo.clearCart(customerId);
         
         return order;

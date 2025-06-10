@@ -9,7 +9,15 @@ const orderSchema = new mongoose.Schema({
     address: { type: String, required: true },
     phone: { type: String, required: true },
     deliveryDate: { type: Date },
-    cart: { type: [mongoose.Schema.Types.ObjectId], ref: 'Cart' },
+    items: [{ 
+        item: { type: mongoose.Schema.Types.ObjectId, ref: 'Glasses', required: true },
+        size: { type: String, required: true },
+        color: { type: String, required: true },
+        lenseType: { type: String, enum: ["No-Prescription", "Prescription"], required: true },
+        prescription: { type: mongoose.Schema.Types.ObjectId, ref: 'Prescription' },
+        quantity: { type: Number, required: true },
+        price: { type: Number, required: true }
+    }],
 });
 
 const Order = mongoose.model('Order', orderSchema);
