@@ -31,7 +31,7 @@ const login = async (email, password) => {
 const logout = () => {
     localStorage.removeItem(AUTH_TOKEN_KEY);
     localStorage.removeItem(AUTH_USER_KEY);
-    window.location.href = '/';
+    window.location.href = '/dashboard';
 };
 
 // Function to check if user is authenticated

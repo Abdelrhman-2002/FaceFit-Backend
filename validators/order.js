@@ -8,7 +8,7 @@ const createOrder = [
 ];
 
 const updateOrderStatus = [
-    body('status').isIn(['pending', 'shipped', 'delivered']).withMessage('Status must be pending, shipped, or delivered')
+    body('status').isIn(['pending', 'shipped', 'delivered', 'canceled']).withMessage('Status must be pending, shipped, delivered, or canceled')
 ];
 
 module.exports = {

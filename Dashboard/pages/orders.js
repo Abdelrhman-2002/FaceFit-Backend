@@ -82,6 +82,7 @@ class OrdersPage {
                                         <option value="pending">Pending</option>
                                         <option value="shipped">Shipped</option>
                                         <option value="delivered">Delivered</option>
+                                        <option value="canceled">Canceled</option>
                                     </select>
                                 </div>
                             </form>
@@ -258,7 +259,7 @@ class OrdersPage {
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <img src="http://localhost:5007/${item.item.images[0]}" alt="${item.item.name}" class="me-2" style="width: 40px; height: 40px; object-fit: cover;">
+                                            <img src="https://facefit.onrender.com/${item.item.images[0]}" alt="${item.item.name}" class="me-2" style="width: 40px; height: 40px; object-fit: cover;">
                                             ${item.item.name}
                                         </div>
                                     </td>
@@ -365,6 +366,7 @@ class OrdersPage {
             case 'pending': return 'warning';
             case 'shipped': return 'info';
             case 'delivered': return 'success';
+            case 'canceled': return 'danger';
             default: return 'secondary';
         }
     }

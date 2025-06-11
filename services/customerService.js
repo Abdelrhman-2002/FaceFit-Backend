@@ -106,12 +106,25 @@ const getFavorites = async (customerId) => {
   }
 };
 
-const getAllCustomers = async () => {
+const getAllCustomers = async (searchQuery) => {
   try {
-    const customers = await customerRepo.getAllCustomers();
+    const customers = await customerRepo.getAllCustomers(searchQuery);
     return customers;
   } catch (error) {
     console.error("Error in getAllCustomers:", error);
+    throw error;
+  }
+};
+
+const deleteCustomerById = async (customerId) => {
+  try {
+    const deletedCustomer = await customerRepo.deleteCustomerById(customerId);
+    if (!deletedCustomer) {
+      throw new Error("Customer not found");
+    }
+    return deletedCustomer;
+  } catch (error) {
+    console.error("Error in deleteCustomerById:", error);
     throw error;
   }
 };
@@ -124,4 +137,5 @@ module.exports = {
   getAllCustomers,
   toggleFavorite,
   getFavorites,
+  deleteCustomerById,
 };

@@ -2,6 +2,8 @@ const customerService = require("../services/customerService");
 const jsend = require("jsend");
 const { validationResult } = require("express-validator");
 const { deleteImageFiles } = require("../middlewares/upload");
+const fs = require('fs');
+const path = require('path');
 
 const signup = async (req, res) => {
   try {
@@ -39,7 +41,8 @@ const createCustomer = (req, res) => {
 
 const getCustomers = async (req, res) => {
   try {
-    const customers = await customerService.getAllCustomers();
+    const searchQuery = req.query.search;
+    const customers = await customerService.getAllCustomers(searchQuery);
     res.send(jsend.success(customers));
   } catch (error) {
     console.log("Error in getCustomers:", error);
@@ -114,6 +117,42 @@ const updateProfilePicture = async (req, res) => {
   }
 };
 
+const getCustomerById = async (req, res) => {
+  try {
+    const customerId = req.params.id;
+    const customer = await customerService.getCustomerById(customerId);
+    res.send(jsend.success(customer));
+  } catch (error) {
+    console.log("Error in getCustomerById:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const deleteCustomer = async (req, res) => {
+  try {
+    const customerId = req.params.id;
+    const customer = await customerService.getCustomerById(customerId);
+    
+    if (!customer) {
+      return res.status(404).json({ error: "Customer not found" });
+    }
+    
+    // Delete profile picture if it's not the default
+    if (customer.profilePicture && customer.profilePicture !== 'default.jpg') {
+      const picturePath = path.join(__dirname, '../uploads/usersPictures/', customer.profilePicture);
+      if (fs.existsSync(picturePath)) {
+        fs.unlinkSync(picturePath);
+      }
+    }
+    
+    await customerService.deleteCustomerById(customerId);
+    res.send(jsend.success({ message: "Customer deleted successfully" }));
+  } catch (error) {
+    console.log("Error in deleteCustomer:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+
 module.exports = {
   signup,
   login,
@@ -124,4 +163,6 @@ module.exports = {
   getFavorites,
   updateProfilePicture,
   getProfile,
+  getCustomerById,
+  deleteCustomer,
 };

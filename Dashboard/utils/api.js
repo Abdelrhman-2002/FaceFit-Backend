@@ -1,8 +1,8 @@
 // API utilities
-// const BASE_URL = 'https://facefit.onrender.com/facefit'; // Production server
-const BASE_URL = 'http://localhost:5007/facefit'; // Local development server
-// const imageBaseURL = 'https://facefit.onrender.com/uploads/glasses/'; // Base URL for images
-const imageBaseURL = 'http://localhost:5007/uploads/glasses/'; // Base URL for images
+const BASE_URL = 'https://facefit.onrender.com/facefit'; // Production server
+// const BASE_URL = 'http://localhost:5007/facefit'; // Local development server
+const imageBaseURL = 'https://facefit.onrender.com/uploads/glasses/'; // Base URL for images
+// const imageBaseURL = 'http://localhost:5007/uploads/glasses/'; // Base URL for images
 // Configure axios defaults
 axios.defaults.baseURL = BASE_URL;
 
@@ -93,6 +93,8 @@ const api = {
     customers: {
         getAll: (params) => axios.get('/customers', { params }),
         getById: (id) => axios.get(`/customers/${id}`),
+        update: (id, data) => axios.put(`/customers/update/${id}`, data),
+        delete: (id) => axios.delete(`/customers/${id}`),
     },
     
     // Orders endpoints

@@ -47,10 +47,34 @@ const updateCustomerById = async (customerId, updateData) => {
   }
 };
 
-const getAllCustomers = async () => {
+const getAllCustomers = async (searchQuery) => {
   try {
-    const customers = await Customer.find().select('-password').populate('favorites');
+    let query = {};
+    
+    if (searchQuery) {
+      // Create a case-insensitive search across multiple fields
+      query = {
+        $or: [
+          { firstName: { $regex: searchQuery, $options: 'i' } },
+          { lastName: { $regex: searchQuery, $options: 'i' } },
+          { email: { $regex: searchQuery, $options: 'i' } },
+          { phoneNumber: { $regex: searchQuery, $options: 'i' } }
+        ]
+      };
+    }
+    
+    const customers = await Customer.find(query).select('-password').populate('favorites');
     return customers;
+  } catch (error) {
+    console.log("Customer Repo ERROR: ", error);
+    throw error;
+  }
+};
+
+const deleteCustomerById = async (customerId) => {
+  try {
+    const deletedCustomer = await Customer.findByIdAndDelete(customerId);
+    return deletedCustomer;
   } catch (error) {
     console.log("Customer Repo ERROR: ", error);
     throw error;
@@ -63,4 +87,5 @@ module.exports = {
   updateCustomerById,
   getCustomerById,
   getAllCustomers,
+  deleteCustomerById,
 };
