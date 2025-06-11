@@ -9,24 +9,21 @@ const jsend = require("jsend");
 router.post("/signup", createCustomer, signup);
 router.post("/login", login);
 
+// Customer-specific routes (must come before /:id to avoid conflicts)
+router.get("/favorites", customerAuth, getFavorites);
+router.post("/favorites/:glassesId", customerAuth, toggleFavorite);
+router.get("/profile", customerAuth, getProfile);
+router.post("/profile-picture", customerAuth, uploadUserPicture.single('profilePicture'), updateProfilePicture);
+router.put("/update", customerAuth, validateUpdateCustomer, updateCustomer);
+
+// Admin routes
 router.get("/", adminAuth, getCustomers);
 router.get("/:id", adminAuth, getCustomerById);
 router.delete("/:id", adminAuth, deleteCustomer);
-
-router.put("/update", customerAuth, validateUpdateCustomer, updateCustomer);
 // New endpoint for admin to update a customer
 router.put("/update/:id", adminAuth, validateUpdateCustomer, (req, res, next) => {
   req.customerId = req.params.id; // Set the customerId to be used in the updateCustomer controller
   next();
 }, updateCustomer);
-
-router.post("/favorites/:glassesId", customerAuth, toggleFavorite);
-router.get("/favorites", customerAuth, getFavorites);
-
-
-router.post("/profile-picture", customerAuth, uploadUserPicture.single('profilePicture'), updateProfilePicture);
-
-
-router.get("/profile", customerAuth, getProfile);
 
 module.exports = router;
