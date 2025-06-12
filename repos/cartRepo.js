@@ -166,10 +166,9 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
         if (updateData.lenseType !== undefined) {
             cartItem.lenseType = updateData.lenseType;
             
-            // If changing from Prescription to No-Prescription, remove lens specifications
+            // If changing from Prescription to No-Prescription, remove prescription but keep lens specification
             if (updateData.lenseType === 'No-Prescription') {
-                cartItem.lensSpecification = undefined;
-                cartItem.lensPrice = 0;
+                cartItem.prescription = undefined;
             }
         }
         
@@ -177,10 +176,10 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
             cartItem.prescription = updateData.prescription;
         }
         
-        // Update lens specification if provided
-        if (updateData.lensSpecification !== undefined && cartItem.lenseType === 'Prescription') {
+        // Update lens specification if provided (now always available)
+        if (updateData.lensSpecification !== undefined) {
             cartItem.lensSpecification = updateData.lensSpecification;
-            cartItem.lensPrice = 50;
+            cartItem.lensPrice = updateData.lensSpecification === 'None' ? 0 : 50;
         }
         
         await cartItem.save({ session });
@@ -234,7 +233,7 @@ const removeCartItem = async (customerId, cartItemId) => {
         }
         
         // Update cart
-        cart.total -= cartItem.price * cartItem.counter;
+        cart.total -= (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.counter;
         cart.items = cart.items.filter(item => item.toString() !== cartItemId.toString());
         await cart.save({ session });
         

@@ -30,13 +30,14 @@ const cartItemSchema = new mongoose.Schema({
   },
   lensSpecification: {
     type: String,
-    enum: ["Standard Eyeglass Lenses", "Blue Light Blocking", "Driving Lenses"],
-    required: function() { return this.lenseType === "Prescription"; }
+    enum: ["None", "Standard Eyeglass Lenses", "Blue Light Blocking", "Driving Lenses"],
+    required: true,
+    default: "None"
   },
   lensPrice: {
     type: Number,
-    default: 50,
-    required: function() { return this.lenseType === "Prescription"; }
+    default: 0,
+    required: true
   },
   prescription: {
     type: mongoose.Schema.Types.ObjectId,
