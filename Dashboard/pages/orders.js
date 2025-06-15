@@ -228,6 +228,9 @@ class OrdersPage {
                         <p><strong>Date:</strong> ${new Date(order.date).toLocaleDateString()}</p>
                         <p><strong>Status:</strong> <span class="badge bg-${this.getStatusColor(order.status)}">${order.status}</span></p>
                         <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
+                        <p><strong>Subtotal:</strong> $${order.subtotal ? order.subtotal.toFixed(2) : order.total.toFixed(2)}</p>
+                        <p><strong>Tax (14%):</strong> $${order.taxAmount ? order.taxAmount.toFixed(2) : '0.00'}</p>
+                        <p><strong>Transportation Fee:</strong> $${order.transportationFee ? order.transportationFee.toFixed(2) : '0.00'}</p>
                         <p><strong>Total:</strong> $${order.total.toFixed(2)}</p>
                     </div>
                     <div class="col-md-6">
@@ -297,7 +300,6 @@ class OrdersPage {
                                                     </div>
                                                     <div class="col-md-6">
                                                         <p class="mb-1"><strong>PD:</strong> ${item.prescription.PD.singlePD ? `Single: ${item.prescription.PD.singlePD}` : `Dual: Left: ${item.prescription.PD.dualPD.left}, Right: ${item.prescription.PD.dualPD.right}`}</p>
-                                                        <p class="mb-1"><strong>ADD:</strong> ${item.prescription.ADD}</p>
                                                     </div>
                                                 </div>
                                                 ` : ''}
@@ -309,6 +311,18 @@ class OrdersPage {
                         </tbody>
                         <tfoot>
                             <tr>
+                                <td colspan="7" class="text-end"><strong>Subtotal:</strong></td>
+                                <td><strong>$${order.subtotal ? order.subtotal.toFixed(2) : order.total.toFixed(2)}</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" class="text-end"><strong>Tax (14%):</strong></td>
+                                <td><strong>$${order.taxAmount ? order.taxAmount.toFixed(2) : '0.00'}</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" class="text-end"><strong>Transportation Fee:</strong></td>
+                                <td><strong>$${order.transportationFee ? order.transportationFee.toFixed(2) : '0.00'}</strong></td>
+                            </tr>
+                            <tr class="table-active">
                                 <td colspan="7" class="text-end"><strong>Total:</strong></td>
                                 <td><strong>$${order.total.toFixed(2)}</strong></td>
                             </tr>

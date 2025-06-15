@@ -21,16 +21,25 @@ const createOrder = async (customerId, orderData) => {
             prescription: cartItem.prescription ? cartItem.prescription._id : null,
             lensSpecification: cartItem.lensSpecification || null,
             lensPrice: cartItem.lensPrice || 0,
-            quantity: cartItem.counter,
+            quantity: cartItem.quantity,
             price: cartItem.price
         }));
+        
+        // Calculate tax and total
+        const subtotal = cart.total;
+        const taxAmount = parseFloat((subtotal * 0.14).toFixed(2)); // 14% tax
+        const transportationFee = 50; // Fixed 50 pounds transportation fee
+        const total = parseFloat((subtotal + taxAmount + transportationFee).toFixed(2));
         
         // Create order data
         const newOrderData = {
             customer: customerId,
             date: new Date(),
             status: "pending",
-            total: cart.total,
+            subtotal: subtotal,
+            taxAmount: taxAmount,
+            transportationFee: transportationFee,
+            total: total,
             paymentMethod: orderData.paymentMethod,
             address: orderData.address,
             phone: orderData.phone,
@@ -101,4 +110,4 @@ module.exports = {
     getCustomerOrders,
     updateOrderStatus,
     getAllOrders
-}; 
+};

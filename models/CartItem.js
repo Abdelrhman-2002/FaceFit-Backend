@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Prescription = require("./Prescription");
 
 const cartItemSchema = new mongoose.Schema({
-  counter: {
+  quantity: {
     type: Number,
     required: true,
   },

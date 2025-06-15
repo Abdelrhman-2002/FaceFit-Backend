@@ -20,8 +20,7 @@ const createPrescription = [
             throw new Error('PD value is required (either singlePD or dualPD)');
         }
         return true;
-    }),
-    body('ADD').isNumeric().withMessage('ADD value is required')
+    })
 ];
 
 const updatePrescription = [
@@ -44,8 +43,7 @@ const updatePrescription = [
             throw new Error('PD value is required (either singlePD or dualPD)');
         }
         return true;
-    }),
-    body('ADD').optional().isNumeric().withMessage('ADD must be a number')
+    })
 ];
 
 module.exports = {

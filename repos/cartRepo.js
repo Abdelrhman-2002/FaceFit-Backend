@@ -67,7 +67,7 @@ const addItemToCart = async (customerId, cartItemData) => {
         
         // Create cart item
         const cartItem = await CartItem.create([{
-            counter: cartItemData.counter || 1,
+            quantity: cartItemData.counter || 1,
             item: cartItemData.item,
             size: cartItemData.size,
             price: glasses.price,

@@ -9,7 +9,7 @@ const addToCart = async (customerId, cartItemData) => {
     try {
         // Prepare cart item data
         const cartData = {
-            counter: cartItemData.quantity || 1,
+            quantity: cartItemData.quantity || 1,
             item: cartItemData.glassesId,
             size: cartItemData.size,
             color: cartItemData.color,

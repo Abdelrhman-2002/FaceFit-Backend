@@ -169,128 +169,12 @@ const options = {
             },
           },
         },
-        Order: {
-          type: 'object',
-          properties: {
-            _id: {
-              type: 'string',
-              description: 'The auto-generated ID of the order',
-            },
-            customer: {
-              type: 'string',
-              description: 'ID of the customer who placed the order',
-            },
-            date: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Date the order was placed',
-            },
-            status: {
-              type: 'string',
-              enum: ['pending', 'shipped', 'delivered'],
-              description: 'Current status of the order',
-            },
-            total: {
-              type: 'number',
-              description: 'Total amount of the order',
-            },
-            paymentMethod: {
-              type: 'string',
-              enum: ['cash'],
-              description: 'Payment method used (cash only)',
-            },
-            address: {
-              type: 'string',
-              description: 'Shipping address',
-            },
-            phone: {
-              type: 'string',
-              description: 'Contact phone number',
-            },
-            deliveryDate: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Expected delivery date',
-            },
-            items: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  item: {
-                    type: 'string',
-                    description: 'ID of the glasses item',
-                  },
-                  size: {
-                    type: 'string',
-                    description: 'Size of the glasses',
-                  },
-                  color: {
-                    type: 'string',
-                    description: 'Color of the glasses',
-                  },
-                  lenseType: {
-                    type: 'string',
-                    enum: ['No-Prescription', 'Prescription'],
-                    description: 'Type of lenses',
-                  },
-                  prescription: {
-                    type: 'string',
-                    description: 'ID of the prescription if applicable',
-                  },
-                  quantity: {
-                    type: 'number',
-                    description: 'Quantity of this item',
-                  },
-                  price: {
-                    type: 'number',
-                    description: 'Price at the time of purchase',
-                  },
-                },
-              },
-            },
-          },
-        },
-        Review: {
-          type: 'object',
-          properties: {
-            _id: {
-              type: 'string',
-              description: 'The auto-generated ID of the review',
-            },
-            customer: {
-              type: 'string',
-              description: 'ID of the customer who wrote the review',
-            },
-            glasses: {
-              type: 'string',
-              description: 'ID of the glasses being reviewed',
-            },
-            rating: {
-              type: 'number',
-              description: 'Rating from 1 to 5',
-            },
-            comment: {
-              type: 'string',
-              description: 'Review comment',
-            },
-            createdAt: {
-              type: 'string',
-              format: 'date-time',
-              description: 'Date the review was written',
-            },
-          },
-        },
         Prescription: {
           type: 'object',
           properties: {
             _id: {
               type: 'string',
               description: 'The auto-generated ID of the prescription',
-            },
-            customer: {
-              type: 'string',
-              description: 'ID of the customer who owns the prescription',
             },
             rightEye: {
               type: 'object',
@@ -315,6 +199,109 @@ const options = {
             name: {
               type: 'string',
               description: 'Name of the prescription',
+            },
+          },
+        },
+        Order: {
+          type: 'object',
+          properties: {
+            _id: {
+              type: 'string',
+              description: 'The auto-generated ID of the order',
+            },
+            customer: {
+              type: 'string',
+              description: 'Customer ID reference',
+            },
+            date: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Order creation date',
+            },
+            status: {
+              type: 'string',
+              enum: ['pending', 'shipped', 'delivered', 'canceled'],
+              description: 'Current order status',
+            },
+            subtotal: {
+              type: 'number',
+              description: 'Order subtotal before tax and fees',
+            },
+            taxAmount: {
+              type: 'number',
+              description: '14% tax amount',
+            },
+            transportationFee: {
+              type: 'number',
+              description: 'Fixed transportation fee (50 pounds)',
+            },
+            total: {
+              type: 'number',
+              description: 'Total order amount including tax and transportation fee',
+            },
+            paymentMethod: {
+              type: 'string',
+              enum: ['cash'],
+              description: 'Payment method used',
+            },
+            address: {
+              type: 'string',
+              description: 'Shipping address',
+            },
+            phone: {
+              type: 'string',
+              description: 'Customer phone number',
+            },
+            deliveryDate: {
+              type: 'string',
+              format: 'date-time',
+              description: 'Expected delivery date',
+            },
+            items: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  item: {
+                    type: 'string',
+                    description: 'Reference to glasses ID',
+                  },
+                  size: {
+                    type: 'string',
+                    description: 'Selected glasses size',
+                  },
+                  color: {
+                    type: 'string',
+                    description: 'Selected glasses color',
+                  },
+                  lenseType: {
+                    type: 'string',
+                    enum: ['No-Prescription', 'Prescription'],
+                    description: 'Type of lenses',
+                  },
+                  prescription: {
+                    type: 'string',
+                    description: 'Reference to prescription ID if applicable',
+                  },
+                  lensSpecification: {
+                    type: 'string',
+                    enum: ['Standard Eyeglass Lenses', 'Blue Light Blocking', 'Driving Lenses'],
+                    description: 'Lens specification if applicable',
+                  },
+                  lensPrice: {
+                    type: 'number',
+                    description: 'Additional price for special lenses',
+                  },
+                  quantity: {
+                    type: 'number',
+                    description: 'Quantity of this item',
+                  },
+                  price: {
+                    type: 'number',
+                    description: 'Price per item',
+                  },
+                },
+              },
             },
           },
         },
@@ -358,4 +345,4 @@ const specs = swaggerJsdoc(options);
 module.exports = {
   swaggerUi,
   specs,
-}; 
+};

@@ -20,8 +20,7 @@ const prescriptionSchema = new mongoose.Schema({
             }
         },
         required: true
-    },
-    ADD: { type: Number, required: true },
+    }
 });
 
 const Prescription = mongoose.model('Prescription', prescriptionSchema);

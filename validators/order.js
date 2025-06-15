@@ -14,4 +14,4 @@ const updateOrderStatus = [
 module.exports = {
     createOrder,
     updateOrderStatus
-}; 
+};
