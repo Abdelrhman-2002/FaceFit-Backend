@@ -67,7 +67,7 @@ const addItemToCart = async (customerId, cartItemData) => {
         
         // Create cart item
         const cartItem = await CartItem.create([{
-            quantity: cartItemData.counter || 1,
+            quantity: cartItemData.quantity || 1,
             item: cartItemData.item,
             size: cartItemData.size,
             price: glasses.price,
@@ -81,7 +81,7 @@ const addItemToCart = async (customerId, cartItemData) => {
         // If customer doesn't have a cart, create one
         let cart;
         // Calculate the item total price including lens price if applicable
-        const itemTotalPrice = (glasses.price + (cartItemData.lensPrice || 0)) * (cartItemData.counter || 1);
+        const itemTotalPrice = (glasses.price + (cartItemData.lensPrice || 0)) * (cartItemData.quantity || 1);
         
         if (!customer.cart || customer.cart.length === 0) {
             cart = await Cart.create([{
@@ -147,11 +147,11 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
         }
         
         // Calculate old total (including lens price)
-        const oldTotal = (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.counter;
+        const oldTotal = (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.quantity;
         
-        // Update counter if provided
-        if (updateData.counter !== undefined) {
-            cartItem.counter = updateData.counter;
+        // Update quantity if provided
+        if (updateData.quantity !== undefined) {
+            cartItem.quantity = updateData.quantity;
         }
         
         // Update other fields if provided
@@ -185,7 +185,7 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
         await cartItem.save({ session });
         
         // Calculate new total and update cart (including lens price)
-        const newTotal = (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.counter;
+        const newTotal = (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.quantity;
         cart.total = cart.total - oldTotal + newTotal;
         await cart.save({ session });
         
@@ -233,7 +233,7 @@ const removeCartItem = async (customerId, cartItemId) => {
         }
         
         // Update cart
-        cart.total -= (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.counter;
+        cart.total -= (cartItem.price + (cartItem.lensPrice || 0)) * cartItem.quantity;
         cart.items = cart.items.filter(item => item.toString() !== cartItemId.toString());
         await cart.save({ session });
         

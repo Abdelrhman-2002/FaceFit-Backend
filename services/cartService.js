@@ -52,7 +52,7 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
         const updateCartData = {};
         
         if (updateData.quantity) {
-            updateCartData.counter = updateData.quantity;
+            updateCartData.quantity = updateData.quantity;
         }
         
         if (updateData.size) {
