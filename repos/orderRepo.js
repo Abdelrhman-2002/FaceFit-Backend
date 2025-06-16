@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const Customer = require('../models/Customer');
 const Cart = require('../models/Cart');
+const Glasses = require('../models/Glasses');
 const mongoose = require('mongoose');
 
 // Create an order
@@ -9,8 +10,34 @@ const createOrder = async (orderData) => {
     session.startTransaction();
     
     try {
+        // Check stock availability for each item
+        for (const item of orderData.items) {
+            const glasses = await Glasses.findById(item.item).session(session);
+            if (!glasses) {
+                throw new Error(`Glasses with ID ${item.item} not found`);
+            }
+            
+            if (glasses.stock < item.quantity) {
+                throw new Error(`Insufficient stock for ${glasses.name}. Available: ${glasses.stock}, Requested: ${item.quantity}`);
+            }
+        }
+        
         // Create the order
         const order = await Order.create([orderData], { session });
+        
+        // Update stock and numberOfSells for each item
+        for (const item of orderData.items) {
+            await Glasses.findByIdAndUpdate(
+                item.item,
+                {
+                    $inc: {
+                        stock: -item.quantity,
+                        numberOfSells: item.quantity
+                    }
+                },
+                { session }
+            );
+        }
         
         // Update customer orders
         await Customer.findByIdAndUpdate(
@@ -89,11 +116,23 @@ const getCustomerOrders = async (customerId) => {
 
 // Update order status
 const updateOrderStatus = async (orderId, status) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    
     try {
+        // Get the current order to check previous status
+        const currentOrder = await Order.findById(orderId).session(session);
+        if (!currentOrder) {
+            throw new Error("Order not found");
+        }
+        
+        const previousStatus = currentOrder.status;
+        
+        // Update the order status
         const order = await Order.findByIdAndUpdate(
             orderId,
             { status },
-            { new: true }
+            { new: true, session }
         )
         .populate('customer')
         .populate({
@@ -105,12 +144,29 @@ const updateOrderStatus = async (orderId, status) => {
             model: 'Prescription'
         });
         
-        if (!order) {
-            throw new Error("Order not found");
+        // If order is being canceled and it wasn't canceled before, restore stock
+        if (status === 'canceled' && previousStatus !== 'canceled') {
+            for (const item of order.items) {
+                await Glasses.findByIdAndUpdate(
+                    item.item._id,
+                    {
+                        $inc: {
+                            stock: item.quantity,
+                            numberOfSells: -item.quantity
+                        }
+                    },
+                    { session }
+                );
+            }
         }
+        
+        await session.commitTransaction();
+        session.endSession();
         
         return order;
     } catch (error) {
+        await session.abortTransaction();
+        session.endSession();
         console.error("Failed to update order status:", error);
         throw error;
     }
@@ -144,4 +200,4 @@ module.exports = {
     getCustomerOrders,
     updateOrderStatus,
     getAllOrders
-}; 
+};

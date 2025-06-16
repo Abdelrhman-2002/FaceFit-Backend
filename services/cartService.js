@@ -1,15 +1,34 @@
 const cartRepo = require('../repos/cartRepo');
 const Prescription = require('../models/Prescription');
 const Glasses = require('../models/Glasses');
+const CartItem = require('../models/CartItem');
+const Cart = require('../models/Cart');
 const mongoose = require('mongoose');
 const Customer = require('../models/Customer');
 
 // Add item to cart
 const addToCart = async (customerId, cartItemData) => {
     try {
+        // Check if glasses exists and has sufficient stock
+        const glasses = await Glasses.findById(cartItemData.glassesId);
+        if (!glasses) {
+            throw new Error("Glasses not found");
+        }
+        
+        const requestedQuantity = cartItemData.quantity || 1;
+        
+        // Get total existing quantity of the same glasses in cart
+        const existingQuantity = await getTotalGlassesQuantityInCart(customerId, cartItemData.glassesId);
+        const totalQuantity = existingQuantity + requestedQuantity;
+        
+        // Check if total quantity exceeds available stock
+        if (glasses.stock < totalQuantity) {
+            throw new Error(`Insufficient stock. Available: ${glasses.stock}, In cart: ${existingQuantity}, Requested: ${requestedQuantity}, Total would be: ${totalQuantity}`);
+        }
+        
         // Prepare cart item data
         const cartData = {
-            quantity: cartItemData.quantity || 1,
+            quantity: requestedQuantity,
             item: cartItemData.glassesId,
             size: cartItemData.size,
             color: cartItemData.color,
@@ -23,8 +42,7 @@ const addToCart = async (customerId, cartItemData) => {
 
         return await cartRepo.addItemToCart(customerId, cartData);
     } catch (error) {
-        console.error("Error in addToCart:", error);
-        throw error;
+        throw handleCartError(error, 'addToCart');
     }
 };
 
@@ -40,7 +58,7 @@ const getCart = async (customerId) => {
         
         return cart;
     } catch (error) {
-        console.error("Error in getCart:", error);
+        handleCartError(error, 'getCart');
         throw error;
     }
 };
@@ -48,6 +66,51 @@ const getCart = async (customerId) => {
 // Update cart item
 const updateCartItem = async (customerId, cartItemId, updateData) => {
     try {
+        // If quantity is being updated, check stock availability
+        if (updateData.quantity) {
+            // Get the cart item directly to avoid population issues
+            const cartItem = await CartItem.findById(cartItemId).populate('item');
+            if (!cartItem) {
+                throw new Error("Cart item not found");
+            }
+            
+            // Verify this cart item belongs to the customer
+            const customer = await Customer.findById(customerId);
+            if (!customer || !customer.cart) {
+                throw new Error("Customer or cart not found");
+            }
+            
+            const cart = await Cart.findById(customer.cart).populate({
+                path: 'items',
+                populate: {
+                    path: 'item'
+                }
+            });
+            if (!cart || !cart.items.some(item => item._id.toString() === cartItemId)) {
+                throw new Error("Cart item not found in customer's cart");
+            }
+            
+            // Check stock availability for the new quantity
+            const glasses = cartItem.item;
+            if (!glasses) {
+                throw new Error("Glasses not found");
+            }
+            
+            // Calculate total quantity of the same glasses in cart (excluding the current item being updated)
+            const existingQuantity = cart.items.reduce((total, item) => {
+                if (item.item && item.item._id.toString() === glasses._id.toString() && item._id.toString() !== cartItemId) {
+                    return total + item.quantity;
+                }
+                return total;
+            }, 0);
+            
+            const totalQuantity = existingQuantity + updateData.quantity;
+            
+            if (glasses.stock < totalQuantity) {
+                throw new Error(`Insufficient stock. Available: ${glasses.stock}, Other quantities in cart: ${existingQuantity}, Requested: ${updateData.quantity}, Total would be: ${totalQuantity}`);
+            }
+        }
+        
         // Prepare update data
         const updateCartData = {};
         
@@ -84,8 +147,7 @@ const updateCartItem = async (customerId, cartItemId, updateData) => {
         
         return await cartRepo.updateCartItem(customerId, cartItemId, updateCartData);
     } catch (error) {
-        console.error("Error in updateCartItem:", error);
-        throw error;
+        throw handleCartError(error, 'updateCartItem');
     }
 };
 
@@ -94,8 +156,7 @@ const removeFromCart = async (customerId, cartItemId) => {
     try {
         return await cartRepo.removeCartItem(customerId, cartItemId);
     } catch (error) {
-        console.error("Error in removeFromCart:", error);
-        throw error;
+        throw handleCartError(error, 'removeFromCart');
     }
 };
 
@@ -104,8 +165,7 @@ const clearCart = async (customerId) => {
     try {
         return await cartRepo.clearCart(customerId);
     } catch (error) {
-        console.error("Error in clearCart:", error);
-        throw error;
+        throw handleCartError(error, 'clearCart');
     }
 };
 
@@ -160,6 +220,143 @@ const ensureCart = async (customerId) => {
     }
 };
 
+// Validate cart stock before checkout
+const validateCartStock = async (customerId) => {
+    try {
+        const cart = await cartRepo.getCustomerCart(customerId);
+        if (!cart || !cart.items || cart.items.length === 0) {
+            throw new Error("Cart is empty");
+        }
+        
+        const stockIssues = [];
+        
+        // Group cart items by glasses ID to check total quantities
+        const glassesQuantities = {};
+        const glassesInfo = {};
+        
+        // First pass: collect all cart items and group by glasses ID
+        for (const cartItem of cart.items) {
+            // Handle cases where item might not be populated or not exist
+            if (!cartItem.item || !cartItem.item._id) {
+                stockIssues.push({
+                    itemId: cartItem._id,
+                    itemName: 'Unknown Product',
+                    issue: 'Product reference not found'
+                });
+                continue;
+            }
+            
+            const glassesId = cartItem.item._id.toString();
+            
+            // Initialize or add to quantity for this glasses
+            if (!glassesQuantities[glassesId]) {
+                glassesQuantities[glassesId] = 0;
+                glassesInfo[glassesId] = {
+                    name: cartItem.item.name,
+                    cartItems: []
+                };
+            }
+            
+            glassesQuantities[glassesId] += cartItem.quantity;
+            glassesInfo[glassesId].cartItems.push({
+                id: cartItem._id,
+                quantity: cartItem.quantity
+            });
+        }
+        
+        // Second pass: check stock for each unique glasses
+        for (const glassesId in glassesQuantities) {
+            const totalQuantity = glassesQuantities[glassesId];
+            const info = glassesInfo[glassesId];
+            
+            const glasses = await Glasses.findById(glassesId);
+            if (!glasses) {
+                // Add issue for each cart item of this glasses
+                info.cartItems.forEach(cartItem => {
+                    stockIssues.push({
+                        itemId: cartItem.id,
+                        itemName: info.name || 'Unknown Product',
+                        issue: 'Product not found'
+                    });
+                });
+                continue;
+            }
+            
+            if (glasses.stock < totalQuantity) {
+                // Add issue for each cart item of this glasses, but mention total
+                info.cartItems.forEach((cartItem, index) => {
+                    stockIssues.push({
+                        itemId: cartItem.id,
+                        itemName: glasses.name,
+                        requested: cartItem.quantity,
+                        totalRequested: totalQuantity,
+                        available: glasses.stock,
+                        issue: index === 0 ? 
+                            `Insufficient stock (multiple entries of same item: total ${totalQuantity} requested)` : 
+                            'Insufficient stock (part of multiple entries)'
+                    });
+                });
+            }
+        }
+        
+        return {
+            isValid: stockIssues.length === 0,
+            issues: stockIssues
+        };
+    } catch (error) {
+        console.error("Error in validateCartStock:", error);
+        throw error;
+    }
+};
+
+// Helper function to get total quantity of specific glasses in cart
+const getTotalGlassesQuantityInCart = async (customerId, glassesId) => {
+    try {
+        const cart = await cartRepo.getCustomerCart(customerId);
+        if (!cart || !cart.items) {
+            return 0;
+        }
+        
+        return cart.items.reduce((total, cartItem) => {
+            if (cartItem.item && cartItem.item._id.toString() === glassesId) {
+                return total + cartItem.quantity;
+            }
+            return total;
+        }, 0);
+    } catch (error) {
+        console.error("Error getting total glasses quantity in cart:", error);
+        return 0;
+    }
+};
+
+// Enhanced error handling for cart operations
+const handleCartError = (error, operation) => {
+    console.error(`Error in ${operation}:`, error);
+    
+    // Check for specific error types and provide user-friendly messages
+    if (error.message.includes('Cannot read properties of undefined')) {
+        if (error.message.includes('find')) {
+            return new Error('Cart data structure error. Please try refreshing your cart.');
+        }
+        return new Error('Invalid cart data. Please try again.');
+    }
+    
+    if (error.message.includes('Insufficient stock')) {
+        return error; // Pass through stock errors as they're already user-friendly
+    }
+    
+    if (error.message.includes('not found')) {
+        return error; // Pass through not found errors
+    }
+    
+    if (error.message.includes('Cart is empty')) {
+        return error; // Pass through empty cart errors
+    }
+    
+    // Default error message for unexpected errors
+    return new Error('An unexpected error occurred. Please try again.');
+};
+
 module.exports = {
     addToCart,
     getCart,
@@ -168,5 +365,7 @@ module.exports = {
     clearCart,
     createPrescription,
     getPrescription,
-    ensureCart
+    ensureCart,
+    validateCartStock,
+    getTotalGlassesQuantityInCart
 };

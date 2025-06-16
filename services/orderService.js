@@ -1,11 +1,21 @@
 const orderRepo = require('../repos/orderRepo');
 const cartRepo = require('../repos/cartRepo');
+const cartService = require('./cartService');
 const Order = require('../models/Order');
 const mongoose = require('mongoose');
 
 // Create an order (checkout)
 const createOrder = async (customerId, orderData) => {
     try {
+        // Validate cart stock before proceeding
+        const stockValidation = await cartService.validateCartStock(customerId);
+        if (!stockValidation.isValid) {
+            const errorMessage = stockValidation.issues.map(issue => 
+                `${issue.itemName}: ${issue.issue}${issue.available !== undefined ? ` (Available: ${issue.available}, Requested: ${issue.requested})` : ''}`
+            ).join('; ');
+            throw new Error(`Stock validation failed: ${errorMessage}`);
+        }
+        
         // Get customer's cart
         const cart = await cartRepo.getCustomerCart(customerId);
         if (!cart || !cart.items || cart.items.length === 0) {

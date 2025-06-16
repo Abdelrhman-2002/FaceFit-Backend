@@ -111,6 +111,18 @@ const getPrescription = async (req, res) => {
     }
 };
 
+// Validate cart stock
+const validateCartStock = async (req, res) => {
+    try {
+        const customerId = req.customerId;
+        const validation = await cartService.validateCartStock(customerId);
+        res.send(jsend.success(validation));
+    } catch (error) {
+        console.log("Error in validateCartStock:", error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 module.exports = {
     addToCart,
     getCart,
@@ -118,5 +130,6 @@ module.exports = {
     removeFromCart,
     clearCart,
     createPrescription,
-    getPrescription
+    getPrescription,
+    validateCartStock
 };

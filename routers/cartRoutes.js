@@ -7,6 +7,7 @@ const { addToCart, updateCartItem } = require("../validators/cart");
 // Cart routes
 router.post("/add", customerAuth, addToCart, cartController.addToCart);
 router.get("/", customerAuth, cartController.getCart);
+router.get("/validate-stock", customerAuth, cartController.validateCartStock);
 router.put("/edit/:cartItemId", customerAuth, updateCartItem, cartController.updateCartItem);
 router.delete("/delete/:cartItemId", customerAuth, cartController.removeFromCart);
 router.delete("/clear", customerAuth, cartController.clearCart);
