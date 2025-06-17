@@ -1,0 +1,12 @@
+# Blender 4.4.3 MTL File: 'new 4 .blend'
+# www.blender.org
+
+newmtl Sunglasses_-_Lenses
+Ns 1000.000000
+Ka 0.190909 0.190909 0.190909
+Kd 1.000000 0.534139 0.242510
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.650000
+d 1.000000
+illum 3

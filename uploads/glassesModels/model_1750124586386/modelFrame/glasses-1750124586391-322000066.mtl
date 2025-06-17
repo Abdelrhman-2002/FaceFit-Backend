@@ -1,0 +1,12 @@
+# Blender 4.4.3 MTL File: '18.blend'
+# www.blender.org
+
+newmtl Glasses_.001
+Ns 200.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.500000
+illum 2
+map_Kd C:/Users/LIGION/Desktop/18-19-20-21-22/Textures/T_Glasses_BaseColor.png
+map_d C:/Users/LIGION/Desktop/18-19-20-21-22/Textures/T_Glasses_BaseColor.png
